@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+flask_session/
+.DS_Store
+.env
+uploads/
+*.log
+.dockerignore
+RBS.jpg
+testing.py
+idp.py

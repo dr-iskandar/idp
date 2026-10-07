@@ -1,0 +1,123 @@
+{% extends "base.html" %} {% block styles %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('tf.static', filename='css/tf.css') }}"
+/>
+{% endblock %} {% block title %} Trade Finance - Details | DocIDP {% endblock %}
+{% block body %}
+<div class="container-fluid">
+  <div class="d-flex align-items-center justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <div class="d-flex align-items-center gap-3">
+      <button
+        type="button"
+        class="btn btn-sm btn-light border rounded-pill px-3 py-1 d-inline-flex align-items-center gap-2 text-dark shadow-sm"
+        onclick="location.href='/trade-finance/'"
+        title="Kembali"
+      >
+        <i class="fa-solid fa-chevron-left text-primary"></i>
+        <span class="fw-semibold">Kembali</span>
+      </button>
+      <h1 class="h5 mb-0 font-weight-bold text-dark">Trade Finance Details</h1>
+    </div>
+  </div>
+
+  <div class="container-fluid mb-3">
+    <nav>
+      <div class="nav apple-tab-nav" id="nav-tab" role="tablist">
+        <button
+          class="nav-link active"
+          id="nav-basicinfo-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#nav-basicinfo"
+          type="button"
+          role="tab"
+          aria-controls="nav-basicinfo"
+          aria-selected="true"
+        >
+          Basic Info
+        </button>
+        <button
+          class="nav-link"
+          id="nav-consistency-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#nav-consistency"
+          type="button"
+          role="tab"
+          aria-controls="nav-consistency"
+          aria-selected="false"
+        >
+          Consistency Detail
+        </button>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      {% include 'details/tf_basicinfo.html' %} {% include
+      'details/tf_consistency.html' %}
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="staticBackdrop"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">
+          Choose Main Document Type
+        </h1>
+      </div>
+      <div class="modal-body" id="modal-radio-buttons">
+        <!-- Radio buttons will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="submit-main-type-button"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Modal -->
+<div
+  class="modal fade"
+  id="loadingModal"
+  tabindex="-1"
+  aria-labelledby="loadingModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Processing your request...</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script
+  defer
+  src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"
+></script>
+<script type="text/javascript">
+  const recordId = "{{ record_id }}";
+</script>
+<script
+  defer
+  src="{{ url_for('tf.static', filename='js/tf_details.js') }}"
+></script>
+{% endblock %}

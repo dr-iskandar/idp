@@ -1,0 +1,166 @@
+<div
+  class="tab-pane fade"
+  id="nav-transactions"
+  role="tabpanel"
+  aria-labelledby="nav-transactions-tab"
+>
+  <div class="container-fluid border border-top-0 p-3 bg-white">
+    <!-- Categorization Setting -->
+    <div class="shadow container-fluid bg-white p-3 mt-3">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom pb-1"
+      >
+        <h1 class="h6">Categorization Setting</h1>
+        <button
+          class="btn btn-sm btn-outline-warning float-right border-0"
+          id="edit-mode-categorization-toggle"
+        >
+          <i class="fas fa-pen"></i>
+        </button>
+      </div>
+      <div class="card text-white bg-secondary my-3" id="business-card">
+        <div class="card-body">
+          <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3"
+          >
+            <h5 class="card-title">Business</h5>
+            <button
+              class="btn btn-sm btn-outline-light edit-mode-only"
+              id="add-business-subcategory"
+              data-bs-toggle="modal"
+              data-bs-target="#addSubcategoryModal"
+              data-bs-whatever="Business"
+            >
+              <i class="fas fa-plus"></i> Add Subcategory
+            </button>
+          </div>
+
+          <div
+            class="d-flex flex-nowrap overflow-auto"
+            id="business-categories"
+          >
+            <!-- Business Categories will be added here dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <div class="card text-white bg-secondary my-3" id="non-business-card">
+        <div class="card-body">
+          <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3"
+          >
+            <h5 class="card-title">Non-Business</h5>
+            <button
+              class="btn btn-sm btn-outline-light edit-mode-only"
+              id="add-non-business-subcategory"
+              data-bs-toggle="modal"
+              data-bs-target="#addSubcategoryModal"
+              data-bs-whatever="Non-Business"
+            >
+              <i class="fas fa-plus"></i> Add Subcategory
+            </button>
+          </div>
+
+          <div
+            class="d-flex flex-nowrap overflow-auto"
+            id="non-business-categories"
+          >
+            <!-- Non-Business Categories will be added here dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="addSubcategoryModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="addSubcategoryModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addSubcategoryModalLabel"></h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="record-form">
+              <div class="mb-3">
+                <label for="category-name" class="col-form-label"
+                  >Category Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="category-name"
+                  disabled
+                />
+              </div>
+              <div class="mb-3">
+                <label for="subcategory-name" class="col-form-label"
+                  >Subcategory Name</label
+                >
+                <input type="text" class="form-control" id="subcategory-name" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="add-category-button"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accounts Activity Table -->
+    <div class="shadow container-fluid bg-white p-3 mt-3">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom pb-1"
+      >
+        <h1 class="h6">Accounts Summary</h1>
+        <div
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center"
+        >
+          <select
+            class="form-select"
+            id="currency-accounts-select"
+            aria-label="Default select example"
+          >
+            <option selected value="IDR">IDR</option>
+            <option value="USD">USD</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table
+          id="accounts-activity-table"
+          class="table table-bordered table-striped border-bottom"
+        >
+          <thead id="accounts-activity-table-head" class="table-dark"></thead>
+          <tbody id="accounts-activity-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

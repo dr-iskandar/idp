@@ -1,0 +1,177 @@
+{% extends "administrator_base.html" %} {% block body %}
+<div class="container-fluid">
+  <div
+    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+  >
+    <h1 class="h5">Company Details</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group me-2">
+        <!-- Button trigger modal -->
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#createRoleModal"
+        >
+          <i class="fa-solid fa-plus"></i> Create New Role
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="createRoleModal"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="createRoleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createRoleModalLabel">Create New Role</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <form id="createRoleForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+                required
+                minlength="3"
+                maxlength="50"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                required
+                minlength="12"
+              />
+            </div>
+            <div id="password-strength-meter">
+              <div id="strength-bar"></div>
+              <div id="strength-text"></div>
+            </div>
+            <div class="mb-3">
+              <label for="role" class="form-label">Role</label>
+              <select class="form-select" id="role" name="role" required>
+                <option value="">Select a role</option>
+                <option value="operational">Operational Manager</option>
+                <option value="analyst">User Analyst</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary">Create</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table id="tf-table" class="table table-custom table-hover">
+      <thead>
+        <tr class="align-middle">
+          <th scope="col" class="text-center">Created At</th>
+          <th scope="col" class="text-center">User ID</th>
+          <th scope="col" class="text-center">Username</th>
+          <th scope="col" class="text-center">Role</th>
+          <th scope="col" class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tf-table-body"></tbody>
+    </table>
+  </div>
+
+  <!-- API Key Modal -->
+  <div
+    class="modal fade"
+    id="apiKeyModal"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="apiKeyModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="apiKeyModalLabel">Your API Key</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p class="alert alert-warning">
+            <strong>Important:</strong> This API key will only be shown once.
+            Please save it securely.
+          </p>
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="apiKeyDisplay"
+              readonly
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              id="toggleApiKey"
+            >
+              <i class="fa-solid fa-eye"></i>
+            </button>
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              id="copyApiKey"
+            >
+              Copy
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+            I've saved the API key
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}{% block scripts %}
+<script type="text/javascript">
+  const companyId = "{{ company_id }}";
+</script>
+<script
+  type="module"
+  src="{{ url_for('administrator.static', filename='js/administrator_detail.js') }}"
+></script>
+{% endblock %}

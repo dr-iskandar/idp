@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('playground.static', filename='css/playground.css') }}" />
+{% endblock %}
+
+{% block title %} Document Reconciliation | DocIDP {% endblock %}
+
+{% block body %}
+<div class="container-fluid px-4 py-3">
+  <!-- Hero Header -->
+  <div class="playground-header-hero d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <div class="playground-title">
+        <i class="fa-solid fa-layer-group text-primary"></i> Document Reconciliation Studio
+      </div>
+      <div class="playground-subtitle">
+        Unggah dua dokumen (PDF atau Gambar) untuk mengekstrak dan menganalisis kesesuaian data secara otomatis melalui AI Engine.
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Form Area -->
+  <form id="playground-doc2doc-form" enctype="multipart/form-data">
+    <div class="row g-4 mb-4">
+      <!-- Document A Dropzone Card -->
+      <div class="col-lg-6">
+        <div class="studio-dropzone-card h-100">
+          <div class="studio-card-header">
+            <div class="icon-badge-a">
+              <i class="fa-solid fa-file-invoice"></i>
+            </div>
+            <div>
+              <h6 class="fw-bold mb-0 text-dark" style="font-size: 1.05rem;">Dokumen A (Referensi Utama)</h6>
+              <span class="text-secondary small">Contoh: Letter of Credit (LC), Purchase Order (PO), Kontrak</span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-secondary">Jenis / Tag Dokumen A</label>
+            <input type="text" class="form-control form-control-apple" id="doc-a-type-name" name="doc_a_name" placeholder="Misal: Letter of Credit (LC)">
+          </div>
+
+          <!-- Dropzone Box A -->
+          <div class="dropzone-box" id="dropzone-a" onclick="document.getElementById('file-a-input').click()">
+            <div class="dropzone-icon">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <div class="fw-bold text-dark mb-1" style="font-size: 0.98rem;">Unggah Dokumen A</div>
+            <div class="small text-secondary mb-3">Klik atau seret berkas ke sini (PDF, JPG, PNG)</div>
+            <input type="file" class="form-control d-none" id="file-a-input" name="file_a" accept=".pdf,.jpg,.jpeg,.png">
+            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-4 py-1 fw-semibold">
+              <i class="fa-solid fa-folder-open me-1.5"></i> Pilih Berkas A
+            </button>
+            <div class="d-none mt-2" id="file-a-name-container">
+              <span class="file-chip" id="file-a-name-display"><i class="fa-solid fa-circle-check"></i> <span></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Document B Dropzone Card -->
+      <div class="col-lg-6">
+        <div class="studio-dropzone-card h-100">
+          <div class="studio-card-header">
+            <div class="icon-badge-b">
+              <i class="fa-solid fa-file-lines"></i>
+            </div>
+            <div>
+              <h6 class="fw-bold mb-0 text-dark" style="font-size: 1.05rem;">Dokumen B (Pembanding / Tagihan)</h6>
+              <span class="text-secondary small">Contoh: Commercial Invoice, Delivery Order, Invoice</span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-secondary">Jenis / Tag Dokumen B</label>
+            <input type="text" class="form-control form-control-apple" id="doc-b-type-name" name="doc_b_name" placeholder="Misal: Commercial Invoice">
+          </div>
+
+          <!-- Dropzone Box B -->
+          <div class="dropzone-box" id="dropzone-b" onclick="document.getElementById('file-b-input').click()">
+            <div class="dropzone-icon" style="color: #5856d6;">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <div class="fw-bold text-dark mb-1" style="font-size: 0.98rem;">Unggah Dokumen B</div>
+            <div class="small text-secondary mb-3">Klik atau seret berkas ke sini (PDF, JPG, PNG)</div>
+            <input type="file" class="form-control d-none" id="file-b-input" name="file_b" accept=".pdf,.jpg,.jpeg,.png">
+            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-4 py-1 fw-semibold" style="border-color: #5856d6; color: #5856d6;">
+              <i class="fa-solid fa-folder-open me-1.5"></i> Pilih Berkas B
+            </button>
+            <div class="d-none mt-2" id="file-b-name-container">
+              <span class="file-chip" id="file-b-name-display"><i class="fa-solid fa-circle-check"></i> <span></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Action Button -->
+    <div class="text-center my-4">
+      <button type="submit" class="btn btn-apple-submit" id="btn-submit-reconcile">
+        <i class="fa-solid fa-arrows-rotate me-2"></i> Jalankan Rekonsiliasi Dokumen
+      </button>
+    </div>
+  </form>
+
+  <!-- Live Results Panel (Hidden until submission) -->
+  <div class="row d-none mb-5" id="results-section">
+    <div class="col-12">
+      <div class="results-card">
+        <!-- Results Header -->
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+          <h5 class="fw-bold text-dark mb-0">
+            <i class="fa-solid fa-list-check text-primary me-2"></i> Hasil Analisis Rekonsiliasi
+          </h5>
+          <div class="d-flex align-items-center gap-2">
+            <span id="reconcile-score-badge" class="badge bg-light text-dark border px-3 py-2 fs-6 rounded-pill">Match Score: 0%</span>
+            <span id="reconcile-status-badge" class="badge bg-secondary px-3 py-2 fs-6 rounded-pill">PROCESSED</span>
+          </div>
+        </div>
+
+        <!-- AI Executive Summary -->
+        <div class="mb-4">
+          <label class="form-label small fw-bold text-secondary text-uppercase mb-2"><i class="fa-solid fa-brain text-primary me-1"></i> Ringkasan Analisis AI Engine</label>
+          <div class="summary-box-apple" id="ai-summary-text">
+            Hasil analisis rekonsiliasi dokumen akan ditampilkan di sini.
+          </div>
+        </div>
+
+        <!-- Breakdown Table -->
+        <div class="table-responsive">
+          <table class="table table-custom align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Item Perbandingan</th>
+                <th>Nilai Dokumen A</th>
+                <th>Nilai Dokumen B</th>
+                <th>Status Match</th>
+                <th>Skor Similarity</th>
+                <th>Catatan Audit</th>
+              </tr>
+            </thead>
+            <tbody id="reconcile-matrix-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('playground.static', filename='js/playground.js') }}"></script>
+{% endblock %}

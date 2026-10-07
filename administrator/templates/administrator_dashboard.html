@@ -1,0 +1,103 @@
+{% extends "administrator_base.html" %} {% block body %}
+<div class="container-fluid">
+  <div
+    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+  >
+    <h1 class="h5">Administrator Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group me-2">
+        <!-- Button trigger modal -->
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+          id="submit-button"
+        >
+          <i class="fa-solid fa-plus"></i> Create New Company
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="staticBackdrop"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">
+            Create New Company
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form id="record-form">
+            <div class="mb-3">
+              <label for="record-name" class="col-form-label"
+                >Company Name</label
+              >
+              <input type="text" class="form-control" id="record-name" />
+              <label for="record-limit" class="col-form-label">Limit</label>
+              <input
+                type="number"
+                class="form-control"
+                id="record-limit"
+                min="1"
+                step="1"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" id="create-button">
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table id="tf-table" class="table table-custom table-hover">
+      <thead>
+        <tr class="align-middle">
+          <th scope="col" class="text-center">Created At</th>
+          <th scope="col" class="text-center">Company ID</th>
+          <th scope="col" class="text-center">Company Name</th>
+          <th scope="col" class="text-center">Limit</th>
+          <th scope="col" class="text-center">Usage</th>
+          <th scope="col" class="text-center">Percentage</th>
+          <th scope="col" class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tf-table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %} {% block scripts %}
+<script
+  type="module"
+  src="{{ url_for('administrator.static', filename='js/administrator.js') }}"
+></script>
+{% endblock %}

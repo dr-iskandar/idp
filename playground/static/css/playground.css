@@ -1,0 +1,213 @@
+/* Premium Apple Studio Design System for IDP Playground */
+
+:root {
+  --apple-blue: #007aff;
+  --apple-blue-hover: #0062cc;
+  --apple-bg-light: #f5f5f7;
+  --apple-card-bg: rgba(255, 255, 255, 0.85);
+  --apple-card-border: rgba(255, 255, 255, 0.9);
+  --apple-text-dark: #1d1d1f;
+  --apple-text-muted: #86868b;
+  --apple-shadow-soft: 0 15px 35px rgba(0, 0, 0, 0.04), 0 3px 10px rgba(0, 0, 0, 0.02);
+  --apple-shadow-glow: 0 12px 28px rgba(0, 122, 255, 0.28);
+}
+
+.playground-header-hero {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--apple-card-border);
+  border-radius: 20px;
+  padding: 1.5rem 1.8rem;
+  box-shadow: var(--apple-shadow-soft);
+  margin-bottom: 1.75rem;
+}
+
+.playground-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--apple-text-dark);
+  letter-spacing: -0.025em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.playground-subtitle {
+  font-size: 0.9rem;
+  color: var(--apple-text-muted);
+  margin-top: 4px;
+  line-height: 1.45;
+}
+
+/* Glassmorphic Dropzone Studio Card */
+.studio-dropzone-card {
+  background: var(--apple-card-bg);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--apple-card-border);
+  border-radius: 24px;
+  box-shadow: var(--apple-shadow-soft);
+  padding: 1.6rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.studio-dropzone-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.06);
+}
+
+.studio-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.icon-badge-a {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.15), rgba(0, 122, 255, 0.05));
+  color: var(--apple-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.icon-badge-b {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(88, 86, 214, 0.15), rgba(88, 86, 214, 0.05));
+  color: #5856d6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+/* Apple Dropzone Box */
+.dropzone-box {
+  background: linear-gradient(135deg, rgba(245, 245, 247, 0.6), rgba(255, 255, 255, 0.8));
+  border: 2px dashed #d2d2d7;
+  border-radius: 18px;
+  padding: 2.2rem 1.5rem;
+  text-align: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+}
+
+.dropzone-box:hover, .dropzone-box.drag-over {
+  border-color: var(--apple-blue);
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.04), rgba(0, 122, 255, 0.08));
+  transform: scale(1.008);
+}
+
+.dropzone-box.has-file {
+  border-style: solid;
+  border-color: #34c759;
+  background: linear-gradient(135deg, rgba(52, 199, 89, 0.04), rgba(52, 199, 89, 0.08));
+}
+
+.dropzone-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  color: var(--apple-blue);
+  margin-bottom: 0.85rem;
+  transition: transform 0.25s ease;
+}
+
+.dropzone-box:hover .dropzone-icon {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* File Chip Indicator */
+.file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  padding: 6px 14px;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: #248a3d;
+  border: 1px solid rgba(52, 199, 89, 0.25);
+  margin-top: 0.75rem;
+}
+
+/* Custom Apple Input */
+.form-control-apple {
+  border-radius: 12px !important;
+  border: 1px solid #d2d2d7 !important;
+  padding: 0.65rem 1rem !important;
+  background: #ffffff !important;
+  font-size: 0.88rem !important;
+  color: #1d1d1f !important;
+  transition: all 0.2s ease !important;
+}
+
+.form-control-apple:focus {
+  border-color: var(--apple-blue) !important;
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.14) !important;
+  outline: none !important;
+}
+
+/* Action Button */
+.btn-apple-submit {
+  background: linear-gradient(135deg, #007aff, #0051a8);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.85rem 2.5rem;
+  border-radius: 30px;
+  border: none;
+  box-shadow: var(--apple-shadow-glow);
+  transition: all 0.25s ease;
+}
+
+.btn-apple-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(0, 122, 255, 0.4);
+  color: #ffffff;
+}
+
+.btn-apple-submit:active {
+  transform: translateY(0);
+}
+
+/* Results Card */
+.results-card {
+  background: var(--apple-card-bg);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--apple-card-border);
+  border-radius: 24px;
+  box-shadow: var(--apple-shadow-soft);
+  padding: 1.75rem;
+}
+
+.summary-box-apple {
+  background: rgba(245, 245, 247, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 1.1rem 1.3rem;
+  line-height: 1.6;
+  font-size: 0.9rem;
+  color: #1d1d1f;
+}

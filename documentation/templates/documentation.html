@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <script
+      src="https://kit.fontawesome.com/649ed7e58b.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('documentation.static', filename='css/documentation.css') }}"
+    />
+    <title>DocIDP | Documentation</title>
+  </head>
+  <body>
+    <nav>
+      <img
+        src="/static/images/logo.png"
+        id="navigation-logo"
+        alt="DocIDP Logo"
+      />
+      <h1>DocIDP API Documentation</h1>
+      <ul>
+        <li><a href="#authentication">Authentication</a></li>
+        <li><a href="#user">User</a></li>
+        <li><a href="#analytics">Analytics</a></li>
+        <li><a href="#bank-statement">Bank Statement</a></li>
+        <li><a href="#financial-statement">Financial Statement</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <section id="authentication" class="section">
+        <h1 id="authentication-guidance">Authentication Guidance</h1>
+        <h2 id="overview">Overview</h2>
+        <p>This API uses a multi-layer authentication system:</p>
+        <ol type="1">
+          <li>API Key: Required for all requests</li>
+          <li>Access Token: Required for authenticated endpoints</li>
+          <li>
+            Refresh Token: Used to obtain a new access token when it expires
+          </li>
+        </ol>
+        <h2 id="obtaining-an-api-key">1. Obtaining an API Key</h2>
+        <p>
+          The API Key is a static credential provided by the master admin. It
+          should be included in all API requests.
+        </p>
+        <ul>
+          <li>
+            <strong>How to obtain</strong>: Contact the master admin to receive
+            your API Key.
+          </li>
+          <li>
+            <strong>Usage</strong>: Include in all API requests using the
+            <code>IDP-API-Key</code> header.
+          </li>
+        </ul>
+        <p>Example:</p>
+        <pre><code>IDP-API-Key: your_api_key_here</code></pre>
+        <h2 id="user-login">2. User Login</h2>
+        <p>
+          To access protected endpoints, you need to obtain an access token and
+          a refresh token by logging in.
+        </p>
+        <ul>
+          <li>
+            <p><strong>URL</strong>: <code>/user/v1/login</code></p>
+          </li>
+          <li>
+            <p><strong>Method</strong>: <code>POST</code></p>
+          </li>
+          <li>
+            <p><strong>Headers</strong>:</p>
+            <ul>
+              <li><code>Content-Type: application/json</code></li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Request Body</strong>:</p>
+            <div class="sourceCode" id="cb2">
+              <pre
+                class="sourceCode json"
+              ><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;username&quot;</span><span class="fu">:</span> <span class="st">&quot;your_username&quot;</span><span class="fu">,</span></span>
+        <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;password&quot;</span><span class="fu">:</span> <span class="st">&quot;your_password&quot;</span></span>
+        <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+            </div>
+          </li>
+          <li>
+            <p><strong>Response</strong>:</p>
+            <div class="sourceCode" id="cb3">
+              <pre
+                class="sourceCode json"
+              ><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+        <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;access_token&quot;</span><span class="fu">:</span> <span class="st">&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</span><span class="fu">,</span></span>
+        <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;refresh_token&quot;</span><span class="fu">:</span> <span class="st">&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</span><span class="fu">,</span></span>
+        <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;role&quot;</span><span class="fu">:</span> <span class="st">&quot;user_role&quot;</span></span>
+        <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+            </div>
+          </li>
+        </ul>
+        <h2 id="using-the-access-token">3. Using the Access Token</h2>
+        <p>
+          The access token should be included in all authenticated API requests.
+        </p>
+        <ul>
+          <li>
+            <strong>Usage</strong>: Include in the
+            <code>Authorization</code> header of your requests.
+          </li>
+          <li>
+            <strong>Format</strong>: <code>Bearer &lt;access_token&gt;</code>
+          </li>
+        </ul>
+        <p>Example:</p>
+        <pre><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+        <h2 id="refreshing-the-access-token">4. Refreshing the Access Token</h2>
+        <p>
+          Access tokens expire after a certain period. Use the refresh token to
+          obtain a new access token.
+        </p>
+        <ul>
+          <li>
+            <p><strong>URL</strong>: <code>/v1/refresh</code></p>
+          </li>
+          <li>
+            <p><strong>Method</strong>: <code>POST</code></p>
+          </li>
+          <li>
+            <p><strong>Headers</strong>:</p>
+            <ul>
+              <li><code>Authorization: Bearer &lt;refresh_token&gt;</code></li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>Response</strong>:</p>
+            <div class="sourceCode" id="cb5">
+              <pre
+                class="sourceCode json"
+              ><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+        <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;access_token&quot;</span><span class="fu">:</span> <span class="st">&quot;new_access_token_here&quot;</span></span>
+        <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+            </div>
+          </li>
+        </ul>
+        <h2 id="understanding-access-and-refresh-tokens">
+          Understanding Access and Refresh Tokens
+        </h2>
+        <h3 id="access-token">Access Token</h3>
+        <ul>
+          <li>A short-lived token (expires in 30 minutes)</li>
+          <li>Should be kept secure and never stored on the client side</li>
+        </ul>
+        <h3 id="refresh-token">Refresh Token</h3>
+        <ul>
+          <li>A long-lived token (for weeks)</li>
+          <li>Used only to obtain a new access token</li>
+          <li>Should be stored securely on the client side</li>
+          <li>Can be revoked by the server if necessary (e.g., on logout)</li>
+        </ul>
+        <h2 id="best-practices">Best Practices</h2>
+        <ol type="1">
+          <li>Always use HTTPS to encrypt all API requests.</li>
+          <li>Never share your API Key or tokens with anyone.</li>
+          <li>Store the refresh token securely on the client side.</li>
+          <li>
+            Implement token refresh logic in your application to handle expired
+            access tokens.
+          </li>
+        </ol>
+        <h2 id="example-api-request">Example API Request</h2>
+        <p>
+          Here's an example of how a typical authenticated API request should
+          look:
+        </p>
+        <pre class="http"><code>GET /../v1/protected-endpoint
+        Host: https://docidp.optifit.digital/api
+        IDP-API-Key: your_api_key_here
+        Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+        <p>
+          Remember to include both the API Key and the Access Token in your
+          requests to authenticated endpoints.
+        </p>
+      </section>
+      <section id="user" class="section">
+        <h2 id="user">User</h2>
+        <h3 id="get-user-detail">1. Get User Detail</h3>
+        <ul>
+          <li><strong>URL</strong>: <code>/user/v1/detail</code></li>
+          <li><strong>Method</strong>: <code>GET</code></li>
+          <li>
+            <strong>Authentication</strong>: Custom authentication required
+          </li>
+          <li>
+            <strong>Description</strong>: Retrieves details of the authenticated
+            user.
+          </li>
+          <li>
+            <strong>Response</strong>:
+            <ul>
+              <li>
+                <p>Success (200 OK):</p>
+                <div class="sourceCode" id="cb7">
+                  <pre
+                    class="sourceCode json"
+                  ><code class="sourceCode json"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+        <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;user_details&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+        <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+        <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;username&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+        <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;role&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span></span>
+        <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+        <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+                </div>
+              </li>
+              <li>
+                <p>Error (404 Not Found):</p>
+                <div class="sourceCode" id="cb8">
+                  <pre
+                    class="sourceCode json"
+                  ><code class="sourceCode json"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+        <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;User not found&quot;</span></span>
+        <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <h3 id="user-login-1">2. User Login</h3>
+        <ul>
+          <li>
+            <p><strong>URL</strong>: <code>/user/v1/login</code></p>
+          </li>
+          <li>
+            <p><strong>Method</strong>: <code>POST</code></p>
+          </li>
+          <li>
+            <p>
+              <strong>Description</strong>: Authenticates a user and returns
+              access and refresh tokens.
+            </p>
+          </li>
+          <li>
+            <p><strong>Request Body</strong>:</p>
+            <div class="sourceCode" id="cb9">
+              <pre
+                class="sourceCode json"
+              ><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;username&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+        <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;password&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+        <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;plt&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span> <span class="er">//</span> <span class="er">Optional</span></span>
+        <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+            </div>
+          </li>
+          <li>
+            <p><strong>Response</strong>:</p>
+            <ul>
+              <li>
+                <p>Success (200 OK):</p>
+                <div class="sourceCode" id="cb10">
+                  <pre
+                    class="sourceCode json"
+                  ><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+        <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;access_token&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+        <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;refresh_token&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+        <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;role&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span></span>
+        <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+                </div>
+              </li>
+              <li>
+                <p>Error (401 Unauthorized):</p>
+                <div class="sourceCode" id="cb11">
+                  <pre
+                    class="sourceCode json"
+                  ><code class="sourceCode json"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+        <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Invalid credentials&quot;</span></span>
+        <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <h3 id="user-logout">3. User Logout</h3>
+        <ul>
+          <li><strong>URL</strong>: <code>/user/v1/logout</code></li>
+          <li><strong>Method</strong>: <code>POST</code></li>
+          <li><strong>Description</strong>: Logs out the current user.</li>
+          <li>
+            <strong>Response</strong>:
+            <ul>
+              <li>
+                <p>Success (200 OK):</p>
+                <div class="sourceCode" id="cb12">
+                  <pre
+                    class="sourceCode json"
+                  ><code class="sourceCode json"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;success&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+        <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Logged out successfully&quot;</span></span>
+        <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <h3 id="refresh-token-1">4. Refresh Token</h3>
+        <ul>
+          <li><strong>URL</strong>: <code>/user/v1/refresh</code></li>
+          <li><strong>Method</strong>: <code>POST</code></li>
+          <li><strong>Authentication</strong>: JWT refresh token required</li>
+          <li>
+            <strong>Description</strong>: Generates a new access token using a
+            refresh token.
+          </li>
+          <li>
+            <strong>Response</strong>:
+            <ul>
+              <li>
+                <p>Success (200 OK):</p>
+                <div class="sourceCode" id="cb13">
+                  <pre
+                    class="sourceCode json"
+                  ><code class="sourceCode json"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+        <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;access_token&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span></span>
+        <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <h3 id="refresh-api-key">5. Refresh API Key</h3>
+        <ul>
+          <li><strong>URL</strong>: <code>/user/v1/refresh_api_key</code></li>
+          <li><strong>Method</strong>: <code>POST</code></li>
+          <li><strong>Authentication</strong>: JWT access token required</li>
+          <li>
+            <strong>Description</strong>: Generates a new API key for the
+            authenticated user.
+          </li>
+          <li>
+            <strong>Response</strong>:
+            <ul>
+              <li>
+                <p>Success (200 OK):</p>
+                <div class="sourceCode" id="cb14">
+                  <pre
+                    class="sourceCode json"
+                  ><code class="sourceCode json"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+        <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;new_api_key&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span></span>
+        <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+                </div>
+              </li>
+              <li>
+                <p>Error (404 Not Found):</p>
+                <div class="sourceCode" id="cb15">
+                  <pre
+                    class="sourceCode json"
+                  ><code class="sourceCode json"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+        <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+        <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;User not found&quot;</span></span>
+        <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+      <section id="analytics" class="section"></section>
+      <section id="bank-statement" class="section"></section>
+      <section id="financial-statement" class="section"></section>
+    </div>
+  </body>
+</html>

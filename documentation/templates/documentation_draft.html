@@ -1,0 +1,1269 @@
+<h1 id="authentication-guidance">Authentication Guidance</h1>
+<h2 id="overview">Overview</h2>
+<p>This API uses a multi-layer authentication system:</p>
+<ol type="1">
+  <li>API Key: Required for all requests</li>
+  <li>Access Token: Required for authenticated endpoints</li>
+  <li>Refresh Token: Used to obtain a new access token when it expires</li>
+</ol>
+<h2 id="obtaining-an-api-key">1. Obtaining an API Key</h2>
+<p>
+  The API Key is a static credential provided by the master admin. It should be
+  included in all API requests.
+</p>
+<ul>
+  <li>
+    <strong>How to obtain</strong>: Contact the master admin to receive your API
+    Key.
+  </li>
+  <li>
+    <strong>Usage</strong>: Include in all API requests using the
+    <code>IDP-API-Key</code> header.
+  </li>
+</ul>
+<p>Example:</p>
+<pre><code>IDP-API-Key: your_api_key_here</code></pre>
+<h2 id="user-login">2. User Login</h2>
+<p>
+  To access protected endpoints, you need to obtain an access token and a
+  refresh token by logging in.
+</p>
+<ul>
+  <li>
+    <p><strong>URL</strong>: <code>/user/v1/login</code></p>
+  </li>
+  <li>
+    <p><strong>Method</strong>: <code>POST</code></p>
+  </li>
+  <li>
+    <p><strong>Headers</strong>:</p>
+    <ul>
+      <li><code>Content-Type: application/json</code></li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Request Body</strong>:</p>
+    <div class="sourceCode" id="cb2">
+      <pre
+        class="sourceCode json"
+      ><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;username&quot;</span><span class="fu">:</span> <span class="st">&quot;your_username&quot;</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;password&quot;</span><span class="fu">:</span> <span class="st">&quot;your_password&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+    </div>
+  </li>
+  <li>
+    <p><strong>Response</strong>:</p>
+    <div class="sourceCode" id="cb3">
+      <pre
+        class="sourceCode json"
+      ><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;access_token&quot;</span><span class="fu">:</span> <span class="st">&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;refresh_token&quot;</span><span class="fu">:</span> <span class="st">&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;role&quot;</span><span class="fu">:</span> <span class="st">&quot;user_role&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+    </div>
+  </li>
+</ul>
+<h2 id="using-the-access-token">3. Using the Access Token</h2>
+<p>The access token should be included in all authenticated API requests.</p>
+<ul>
+  <li>
+    <strong>Usage</strong>: Include in the <code>Authorization</code> header of
+    your requests.
+  </li>
+  <li><strong>Format</strong>: <code>Bearer &lt;access_token&gt;</code></li>
+</ul>
+<p>Example:</p>
+<pre><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+<h2 id="refreshing-the-access-token">4. Refreshing the Access Token</h2>
+<p>
+  Access tokens expire after a certain period. Use the refresh token to obtain a
+  new access token.
+</p>
+<ul>
+  <li>
+    <p><strong>URL</strong>: <code>/v1/refresh</code></p>
+  </li>
+  <li>
+    <p><strong>Method</strong>: <code>POST</code></p>
+  </li>
+  <li>
+    <p><strong>Headers</strong>:</p>
+    <ul>
+      <li><code>Authorization: Bearer &lt;refresh_token&gt;</code></li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Response</strong>:</p>
+    <div class="sourceCode" id="cb5">
+      <pre
+        class="sourceCode json"
+      ><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;access_token&quot;</span><span class="fu">:</span> <span class="st">&quot;new_access_token_here&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+    </div>
+  </li>
+</ul>
+<h2 id="understanding-access-and-refresh-tokens">
+  Understanding Access and Refresh Tokens
+</h2>
+<h3 id="access-token">Access Token</h3>
+<ul>
+  <li>A short-lived token (expires in 30 minutes)</li>
+  <li>Should be kept secure and never stored on the client side</li>
+</ul>
+<h3 id="refresh-token">Refresh Token</h3>
+<ul>
+  <li>A long-lived token (for weeks)</li>
+  <li>Used only to obtain a new access token</li>
+  <li>Should be stored securely on the client side</li>
+  <li>Can be revoked by the server if necessary (e.g., on logout)</li>
+</ul>
+<h2 id="best-practices">Best Practices</h2>
+<ol type="1">
+  <li>Always use HTTPS to encrypt all API requests.</li>
+  <li>Never share your API Key or tokens with anyone.</li>
+  <li>Store the refresh token securely on the client side.</li>
+  <li>
+    Implement token refresh logic in your application to handle expired access
+    tokens.
+  </li>
+</ol>
+<h2 id="example-api-request">Example API Request</h2>
+<p>Here’s an example of how a typical authenticated API request should look:</p>
+<pre class="http"><code>GET /../v1/protected-endpoint
+Host: https://docidp.optifit.digital/api
+IDP-API-Key: your_api_key_here
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+<p>
+  Remember to include both the API Key and the Access Token in your requests to
+  authenticated endpoints.
+</p>
+<h1 id="api-documentation">API Documentation</h1>
+<h2 id="base-url">Base URL</h2>
+<p><code>https://docidp.optifit.digital/api/</code></p>
+<h2 id="user">User</h2>
+<h3 id="get-user-detail">1. Get User Detail</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/user/v1/detail</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li>
+    <strong>Description</strong>: Retrieves details of the authenticated user.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb7">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;user_details&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;username&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;role&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (404 Not Found):</p>
+        <div class="sourceCode" id="cb8">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;User not found&quot;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="user-login-1">2. User Login</h3>
+<ul>
+  <li>
+    <p><strong>URL</strong>: <code>/user/v1/login</code></p>
+  </li>
+  <li>
+    <p><strong>Method</strong>: <code>POST</code></p>
+  </li>
+  <li>
+    <p>
+      <strong>Description</strong>: Authenticates a user and returns access and
+      refresh tokens.
+    </p>
+  </li>
+  <li>
+    <p><strong>Request Body</strong>:</p>
+    <div class="sourceCode" id="cb9">
+      <pre
+        class="sourceCode json"
+      ><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;username&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;password&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;plt&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span> <span class="er">//</span> <span class="er">Optional</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+    </div>
+  </li>
+  <li>
+    <p><strong>Response</strong>:</p>
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb10">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;access_token&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;refresh_token&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;role&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (401 Unauthorized):</p>
+        <div class="sourceCode" id="cb11">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Invalid credentials&quot;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="user-logout">3. User Logout</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/user/v1/logout</code></li>
+  <li><strong>Method</strong>: <code>POST</code></li>
+  <li><strong>Description</strong>: Logs out the current user.</li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb12">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;success&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Logged out successfully&quot;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="refresh-token-1">4. Refresh Token</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/user/v1/refresh</code></li>
+  <li><strong>Method</strong>: <code>POST</code></li>
+  <li><strong>Authentication</strong>: JWT refresh token required</li>
+  <li>
+    <strong>Description</strong>: Generates a new access token using a refresh
+    token.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb13">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;access_token&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="refresh-api-key">5. Refresh API Key</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/user/v1/refresh_api_key</code></li>
+  <li><strong>Method</strong>: <code>POST</code></li>
+  <li><strong>Authentication</strong>: JWT access token required</li>
+  <li>
+    <strong>Description</strong>: Generates a new API key for the authenticated
+    user.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb14">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;new_api_key&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (404 Not Found):</p>
+        <div class="sourceCode" id="cb15">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;User not found&quot;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h2 id="analytics">Analytics</h2>
+<h3 id="get-user-analytics">1. Get User Analytics</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/analytics/v1/limit</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li>
+    <strong>Description</strong>: Retrieves analytics data for the authenticated
+    user’s company, including usage limits and recent history.
+  </li>
+  <li><strong>Authorization</strong>: Requires “operational” role</li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb16">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;limit&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;usage&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;recent_history&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">{</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;title&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;created_at&quot;</span><span class="fu">:</span> <span class="er">datetime</span><span class="fu">,</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;username&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;pages&quot;</span><span class="fu">:</span> <span class="er">number</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (404 Not Found):</p>
+        <div class="sourceCode" id="cb17">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;User not found&quot;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (403 Forbidden):</p>
+        <div class="sourceCode" id="cb18">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Operational access required&quot;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (500 Internal Server Error):</p>
+        <div class="sourceCode" id="cb19">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;An error occurred while fetching analytics data&quot;</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="get-usage-summary">2. Get Usage Summary</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/analytics/v1/usage_summary</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li>
+    <strong>Description</strong>: Retrieves a summary of usage data for the
+    authenticated user’s company, broken down by user and document type.
+  </li>
+  <li><strong>Authorization</strong>: Requires “operational” role</li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb20">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;FaasBs&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">{</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;user&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;records&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;pages&quot;</span><span class="fu">:</span> <span class="er">number</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;FaasFs&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">{</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;user&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;records&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;pages&quot;</span><span class="fu">:</span> <span class="er">number</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;TradeFinance&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">{</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;user&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;records&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;pages&quot;</span><span class="fu">:</span> <span class="er">number</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (404 Not Found):</p>
+        <div class="sourceCode" id="cb21">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;User not found&quot;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (403 Forbidden):</p>
+        <div class="sourceCode" id="cb22">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Operational access required&quot;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (500 Internal Server Error):</p>
+        <div class="sourceCode" id="cb23">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status_code&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;An error occurred while fetching summary data&quot;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h2 id="bank-statement">Bank Statement</h2>
+<h3 id="get-bank-statement-list">1. Get Bank Statement List</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/bs/v1/list</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li><strong>Authorization</strong>: Requires “analyst” role</li>
+  <li>
+    <strong>Description</strong>: Retrieves a list of bank statements for the
+    authenticated user.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb24">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;bankStatements&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;title&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;totalPages&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;createdAt&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;updatedAt&quot;</span><span class="fu">:</span> <span class="er">string</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (404 Not Found):</p>
+        <div class="sourceCode" id="cb25">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;No bank statements found&quot;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="create-bank-statement">2. Create Bank Statement</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/bs/v1/create</code></li>
+  <li><strong>Method</strong>: <code>POST</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li><strong>Authorization</strong>: Requires “analyst” role</li>
+  <li>
+    <strong>Description</strong>: Creates a new bank statement by processing
+    uploaded files.
+  </li>
+  <li>
+    <strong>Request Body</strong>:
+    <ul>
+      <li><code>title</code>: string</li>
+      <li><code>files</code>: file(s)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (201 Created):</p>
+        <div class="sourceCode" id="cb26">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;faasBsId&quot;</span><span class="fu">:</span> <span class="er">string</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (400 Bad Request):</p>
+        <div class="sourceCode" id="cb27">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Invalid file format&quot;</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="delete-bank-statement">3. Delete Bank Statement</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/bs/v1/delete</code></li>
+  <li><strong>Method</strong>: <code>DELETE</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li><strong>Authorization</strong>: Requires “analyst” role</li>
+  <li>
+    <strong>Query Parameters</strong>:
+    <ul>
+      <li><code>bsId</code>: string (Bank Statement ID)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Description</strong>: Deletes a specific bank statement and its
+    related data.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb28">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Bank statement and related data deleted successfully&quot;</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (404 Not Found):</p>
+        <div class="sourceCode" id="cb29">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Bank statement not found&quot;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="get-bank-statement-summary">4. Get Bank Statement Summary</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/bs/v1/summary</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li><strong>Authorization</strong>: Requires “analyst” role</li>
+  <li>
+    <strong>Query Parameters</strong>:
+    <ul>
+      <li><code>bsId</code>: string (Bank Statement ID)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Description</strong>: Retrieves a summary of a specific bank
+    statement.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb30">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;bsId&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;totalBanks&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;totalAccounts&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;totalPages&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;totalTransactions&quot;</span><span class="fu">:</span> <span class="er">number</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="get-bank-statement-accounts-list">
+  5. Get Bank Statement Accounts List
+</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/bs/v1/accounts/list</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li><strong>Authorization</strong>: Requires “analyst” role</li>
+  <li>
+    <strong>Query Parameters</strong>:
+    <ul>
+      <li><code>bsId</code>: string (Bank Statement ID)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Description</strong>: Retrieves a list of accounts in a specific
+    bank statement.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb31">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;bsId&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;accountsList&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;accountNumber&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;bankName&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;accountType&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;pagesIndex&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="er">string</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;accountHolderName&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;statementPeriode&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;currency&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;totalDeposits&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;totalDebits&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;totalNoOfDeposits&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;totalNoOfDebits&quot;</span><span class="fu">:</span> <span class="er">number</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="get-bank-statement-pages-details">
+  6. Get Bank Statement Pages Details
+</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/bs/v1/pages/details</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li><strong>Authorization</strong>: Requires “analyst” role</li>
+  <li>
+    <strong>Query Parameters</strong>:
+    <ul>
+      <li><code>bsId</code>: string (Bank Statement ID)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Description</strong>: Retrieves detailed information about pages in
+    a specific bank statement.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb32">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;pages&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;source&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;bankName&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;accountNumber&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;accountType&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;accountHolderName&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;statementPeriode&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;currency&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;transactions&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;date&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;description&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;amount&quot;</span><span class="fu">:</span> <span class="er">number</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="update-bank-statement-page-details">
+  7. Update Bank Statement Page Details
+</h3>
+<ul>
+  <li>
+    <p><strong>URL</strong>: <code>/faas/bs/v1/page</code></p>
+  </li>
+  <li>
+    <p><strong>Method</strong>: <code>PUT</code></p>
+  </li>
+  <li>
+    <p><strong>Authentication</strong>: Custom authentication required</p>
+  </li>
+  <li>
+    <p><strong>Authorization</strong>: Requires “analyst” role</p>
+  </li>
+  <li>
+    <p>
+      <strong>Description</strong>: Updates details of a specific page in a bank
+      statement.
+    </p>
+  </li>
+  <li>
+    <p><strong>Request Body</strong>:</p>
+    <div class="sourceCode" id="cb33">
+      <pre
+        class="sourceCode json"
+      ><code class="sourceCode json"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;bankName&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;accountNumber&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;accountType&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;accountHolderName&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statementPeriode&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;currency&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;transactions&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;date&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;description&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;amount&quot;</span><span class="fu">:</span> <span class="er">number</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+    </div>
+  </li>
+  <li>
+    <p><strong>Response</strong>:</p>
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb34">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Page details updated successfully&quot;</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="get-subcategories">8. Get Subcategories</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/bs/v1/subcategories</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li><strong>Authorization</strong>: Requires “analyst” role</li>
+  <li>
+    <strong>Query Parameters</strong>:
+    <ul>
+      <li><code>bsId</code>: string (Bank Statement ID)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Description</strong>: Retrieves subcategories for a specific bank
+    statement.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb35">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;categories&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;subcategories&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;subcategoryName&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;keywords&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="er">string</span><span class="ot">]</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="manage-subcategories">9. Manage Subcategories</h3>
+<ul>
+  <li>
+    <p><strong>URL</strong>: <code>/faas/bs/v1/subcategories</code></p>
+  </li>
+  <li>
+    <p><strong>Method</strong>: <code>POST</code></p>
+  </li>
+  <li>
+    <p><strong>Authentication</strong>: Custom authentication required</p>
+  </li>
+  <li>
+    <p><strong>Authorization</strong>: Requires “analyst” role</p>
+  </li>
+  <li>
+    <p>
+      <strong>Description</strong>: Updates subcategories for a specific bank
+      statement.
+    </p>
+  </li>
+  <li>
+    <p><strong>Request Body</strong>:</p>
+    <div class="sourceCode" id="cb36">
+      <pre
+        class="sourceCode json"
+      ><code class="sourceCode json"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;bsId&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;categories&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;subcategories&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;subcategoryName&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;keywords&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="er">string</span><span class="ot">]</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+    </div>
+  </li>
+  <li>
+    <p><strong>Response</strong>:</p>
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb37">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Subcategories updated successfully&quot;</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="get-transactions-activity">10. Get Transactions Activity</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/bs/v1/transactions/activity</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li><strong>Authentication</strong>: Custom authentication required</li>
+  <li><strong>Authorization</strong>: Requires “analyst” role</li>
+  <li>
+    <strong>Query Parameters</strong>:
+    <ul>
+      <li><code>bsId</code>: string (Bank Statement ID)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Description</strong>: Retrieves transaction activity for a specific
+    bank statement.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb38">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;months&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="er">string</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;transactionsData&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;date&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;month&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;currency&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;category&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;subcategory&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;amount&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;description&quot;</span><span class="fu">:</span> <span class="er">string</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h2 id="financial-statement">Financial Statement</h2>
+<h3 id="get-financial-statement-list">1. Get Financial Statement List</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/fs/list</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li>
+    <strong>Description</strong>: Retrieves a list of financial statements for
+    the authenticated user.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb39">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;financialStatements&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;title&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;totalPages&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;createdAt&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;updatedAt&quot;</span><span class="fu">:</span> <span class="er">string</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (404 Not Found):</p>
+        <div class="sourceCode" id="cb40">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;No bank statements found&quot;</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="create-financial-statement">2. Create Financial Statement</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/fs/create</code></li>
+  <li><strong>Method</strong>: <code>POST</code></li>
+  <li>
+    <strong>Description</strong>: Creates a new financial statement by
+    processing uploaded files.
+  </li>
+  <li>
+    <strong>Request Body</strong>:
+    <ul>
+      <li><code>title</code>: string</li>
+      <li><code>files</code>: file(s)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (201 Created):</p>
+        <div class="sourceCode" id="cb41">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;FS created successfully&quot;</span><span class="fu">,</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="er">string</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (400 Bad Request):</p>
+        <div class="sourceCode" id="cb42">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Invalid file format&quot;</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (403 Forbidden):</p>
+        <div class="sourceCode" id="cb43">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Usage limit exceeded&quot;</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="get-financial-statement-pages-details">
+  3. Get Financial Statement Pages Details
+</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/fs/pages/details</code></li>
+  <li><strong>Method</strong>: <code>GET</code></li>
+  <li>
+    <strong>Query Parameters</strong>:
+    <ul>
+      <li><code>fsId</code>: string (Financial Statement ID)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Description</strong>: Retrieves detailed information about pages in
+    a specific financial statement.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb44">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;pages&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;documentType&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;source&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="er">string</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;companyName&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;fields&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="er">string</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;years&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="er">string</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;field&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;year1&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>          <span class="dt">&quot;year2&quot;</span><span class="fu">:</span> <span class="er">number</span></span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (404 Not Found):</p>
+        <div class="sourceCode" id="cb45">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Financial statement not found&quot;</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="delete-financial-statement">4. Delete Financial Statement</h3>
+<ul>
+  <li><strong>URL</strong>: <code>/faas/fs/delete</code></li>
+  <li><strong>Method</strong>: <code>DELETE</code></li>
+  <li>
+    <strong>Query Parameters</strong>:
+    <ul>
+      <li><code>fsId</code>: string (Financial Statement ID)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Description</strong>: Deletes a specific financial statement and its
+    related data.
+  </li>
+  <li>
+    <strong>Response</strong>:
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb46">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Financial statement and related data deleted successfully&quot;</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (404 Not Found):</p>
+        <div class="sourceCode" id="cb47">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Financial statement not found&quot;</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="update-financial-statement-page-details">
+  5. Update Financial Statement Page Details
+</h3>
+<ul>
+  <li>
+    <p><strong>URL</strong>: <code>/faas/fs/page</code></p>
+  </li>
+  <li>
+    <p><strong>Method</strong>: <code>PUT</code></p>
+  </li>
+  <li>
+    <p>
+      <strong>Description</strong>: Updates details of a specific page in a
+      financial statement.
+    </p>
+  </li>
+  <li>
+    <p><strong>Request Body</strong>:</p>
+    <div class="sourceCode" id="cb48">
+      <pre
+        class="sourceCode json"
+      ><code class="sourceCode json"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;documentType&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;companyName&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;years&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="er">string</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;field&quot;</span><span class="fu">:</span> <span class="er">string</span><span class="fu">,</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;year1&quot;</span><span class="fu">:</span> <span class="er">number</span><span class="fu">,</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;year2&quot;</span><span class="fu">:</span> <span class="er">number</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+    </div>
+  </li>
+  <li>
+    <p><strong>Response</strong>:</p>
+    <ul>
+      <li>
+        <p>Success (200 OK):</p>
+        <div class="sourceCode" id="cb49">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESSFUL&quot;</span><span class="fu">,</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Financial statement document updated successfully&quot;</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (400 Bad Request):</p>
+        <div class="sourceCode" id="cb50">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Invalid request data&quot;</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+      <li>
+        <p>Error (404 Not Found):</p>
+        <div class="sourceCode" id="cb51">
+          <pre
+            class="sourceCode json"
+          ><code class="sourceCode json"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;statusCode&quot;</span><span class="fu">:</span> <span class="st">&quot;FAILED&quot;</span><span class="fu">,</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Page not found&quot;</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h2 id="authentication">Authentication</h2>
+<ul>
+  <li>JWT authentication is used for token refresh and API key refresh.</li>
+</ul>
+<h2 id="notes">Notes</h2>
+<ul>
+  <li>Users must have an “operational” role to access Analytics endpoints.</li>
+  <li>
+    Users must have an “analyst” role to access Bank Statement and Financial
+    Statement endpoints.
+  </li>
+  <li>
+    There’s a usage limit per company. If exceeded, certain operations may be
+    restricted.
+  </li>
+</ul>

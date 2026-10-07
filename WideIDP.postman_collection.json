@@ -1,0 +1,673 @@
+{
+  "info": {
+    "_postman_id": "a6a2391f-0a43-4340-bd92-5af33d88cb43",
+    "name": "WideIDP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+    "_exporter_id": "33447010"
+  },
+  "item": [
+    {
+      "name": "User API",
+      "item": [
+        {
+          "name": "User Detail",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{wideidp}}/api/user/v1/detail"
+          },
+          "response": []
+        },
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":\"administrator\",\r\n    \"password\":\"123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{wideidp}}/api/user/v1/login"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytics API (Operational)",
+      "item": [
+        {
+          "name": "User Analytics",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{wideidp}}/api/analytics/v1/limit"
+          },
+          "response": []
+        },
+        {
+          "name": "Usage Summary",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{wideidp}}/api/analytics/v1/usage_summary"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Bank Statement (Analyst)",
+      "item": [
+        {
+          "name": "Bank Statements List",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{wideidp}}/api/faas/bs/v1/list"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Bank Statement",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Sample Bank Statement",
+                  "type": "text"
+                },
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": "/C:/Users/angelica.saputra/OneDrive - PT Wirecard Technologies Indonesia/Demo/280824 Demo - WideIDP/Sample/FaasBs/OIP.jpeg"
+                }
+              ]
+            },
+            "url": "{{wideidp}}/api/faas/bs/v1/create"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Bank Statement",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wideidp}}/api/faas/bs/v1/delete?bsId=d35e4553-f2ad-4f89-8493-f411d85f9376",
+              "host": ["{{wideidp}}"],
+              "path": ["api", "faas", "bs", "v1", "delete"],
+              "query": [
+                {
+                  "key": "bsId",
+                  "value": "d35e4553-f2ad-4f89-8493-f411d85f9376"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Bank Statement Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wideidp}}/api/faas/bs/v1/summary?bsId=d35e4553-f2ad-4f89-8493-f411d85f9376",
+              "host": ["{{wideidp}}"],
+              "path": ["api", "faas", "bs", "v1", "summary"],
+              "query": [
+                {
+                  "key": "bsId",
+                  "value": "d35e4553-f2ad-4f89-8493-f411d85f9376"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Bank Statement Accounts List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wideidp}}/api/faas/bs/v1/accounts/list?bsId=d35e4553-f2ad-4f89-8493-f411d85f9376",
+              "host": ["{{wideidp}}"],
+              "path": ["api", "faas", "bs", "v1", "accounts", "list"],
+              "query": [
+                {
+                  "key": "bsId",
+                  "value": "d35e4553-f2ad-4f89-8493-f411d85f9376"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Bank Statement Pages Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wideidp}}/api/faas/bs/v1/pages/details?bsId=d35e4553-f2ad-4f89-8493-f411d85f9376",
+              "host": ["{{wideidp}}"],
+              "path": ["api", "faas", "bs", "v1", "pages", "details"],
+              "query": [
+                {
+                  "key": "bsId",
+                  "value": "d35e4553-f2ad-4f89-8493-f411d85f9376"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Bank Statement Page Details",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{page_id}}\",\n  \"bankName\": \"Sample Bank\",\n  \"accountNumber\": \"1234567890\",\n  \"accountType\": \"Checking\",\n  \"accountHolderName\": \"John Doe\",\n  \"statementPeriode\": \"2023-01-01 to 2023-01-31\",\n  \"currency\": \"USD\",\n  \"transactions\": [\n    {\n      \"id\": \"{{transaction_id}}\",\n      \"date\": \"2023-01-15\",\n      \"description\": \"Sample Transaction\",\n      \"type\": \"Deposit\",\n      \"amount\": 100.00\n    }\n  ]\n}"
+            },
+            "url": "{{wideidp}}/api/faas/bs/v1/page"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Subcategories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wideidp}}/api/faas/bs/v1/subcategories?bsId=d35e4553-f2ad-4f89-8493-f411d85f9376",
+              "host": ["{{wideidp}}"],
+              "path": ["api", "faas", "bs", "v1", "subcategories"],
+              "query": [
+                {
+                  "key": "bsId",
+                  "value": "d35e4553-f2ad-4f89-8493-f411d85f9376"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Manage Subcategories",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bsId\": \"{{bs_id}}\",\n  \"categories\": [\n    {\n      \"name\": \"Business\",\n      \"subcategories\": [\n        {\n          \"subcategoryName\": \"Sales\",\n          \"keywords\": [\"revenue\", \"income\"]\n        }\n      ]\n    },\n    {\n      \"name\": \"Non-Business\",\n      \"subcategories\": [\n        {\n          \"subcategoryName\": \"Personal\",\n          \"keywords\": [\"groceries\", \"rent\"]\n        }\n      ]\n    }\n  ]\n}"
+            },
+            "url": "{{wideidp}}/api/faas/bs/v1/subcategories"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transactions Activity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wideidp}}/api/faas/bs/v1/transactions/activity?bsId=d35e4553-f2ad-4f89-8493-f411d85f9376",
+              "host": ["{{wideidp}}"],
+              "path": ["api", "faas", "bs", "v1", "transactions", "activity"],
+              "query": [
+                {
+                  "key": "bsId",
+                  "value": "d35e4553-f2ad-4f89-8493-f411d85f9376"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Financial Statement (Analyst)",
+      "item": [
+        {
+          "name": "Get Financial Statement List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{wideidp_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{wideidp}}/api/faas/fs/v1/list"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Financial Statement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Sample Financial Statement",
+                  "type": "text"
+                },
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": "{{wideidp}}/api/faas/fs/v1/create"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Financial Statement Pages Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wideidp}}/api/faas/fs/v1/pages/details?fsId={{fs_id}}",
+              "host": ["{{wideidp}}"],
+              "path": ["api", "faas", "fs", "v1", "pages", "details"],
+              "query": [
+                {
+                  "key": "fsId",
+                  "value": "{{fs_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Financial Statement",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wideidp}}/api//faas/fs/v1/delete?fsId={{fs_id}}",
+              "host": ["{{wideidp}}"],
+              "path": ["api", "", "faas", "fs", "v1", "delete"],
+              "query": [
+                {
+                  "key": "fsId",
+                  "value": "{{fs_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Financial Statement Page Details",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{page_id}}\",\n  \"documentType\": \"Balance Sheet\",\n  \"companyName\": \"Sample Company\",\n  \"years\": [\"2022\", \"2023\"],\n  \"data\": [\n    {\n      \"field\": \"totalCurrentAssets\",\n      \"2022\": 100000,\n      \"2023\": 120000\n    },\n    {\n      \"field\": \"totalNonCurrentAssets\",\n      \"2022\": 200000,\n      \"2023\": 220000\n    }\n  ]\n}"
+            },
+            "url": "{{wideidp}}/api//faas/fs/v1/page"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Administrator",
+      "item": [
+        {
+          "name": "Get Companies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{widechat_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{wideidp}}/api/administrator/v1/companies"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Company Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{widechat_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wideidp}}/api/administrator/v1/company?companyId=ae2be633-f9e3-4c73-8704-1f091bac47f3",
+              "host": ["{{wideidp}}"],
+              "path": ["api", "administrator", "v1", "company"],
+              "query": [
+                {
+                  "key": "companyId",
+                  "value": "ae2be633-f9e3-4c73-8704-1f091bac47f3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{widechat_api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"test_company\",\r\n    \"limit\":200\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{wideidp}}/api/administrator/v1/company"
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{wideidp_access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "IDP-API-Key",
+                "value": "{{widechat_api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\":\"test_operational\",\r\n    \"password\":\"123.Password\",\r\n    \"role\":\"operational\",\r\n    \"companyId\":\"ae2be633-f9e3-4c73-8704-1f091bac47f3\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{wideidp}}/api/administrator/v1/user"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

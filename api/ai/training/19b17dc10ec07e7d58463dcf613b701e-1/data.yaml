@@ -1,0 +1,12 @@
+names:
+  - transaction
+nc: 1
+roboflow:
+  license: CC BY 4.0
+  project: 19b17dc10ec07e7d58463dcf613b701e
+  url: https://universe.roboflow.com/aywyudxycg0bpbooi7yqha/19b17dc10ec07e7d58463dcf613b701e/dataset/1
+  version: 1
+  workspace: aywyudxycg0bpbooi7yqha
+test: C:\Users\angelica.saputra\OneDrive - PT Wirecard Technologies Indonesia\AI\docidp\api\ai\training\19b17dc10ec07e7d58463dcf613b701e-1\test\images
+train: C:\Users\angelica.saputra\OneDrive - PT Wirecard Technologies Indonesia\AI\docidp\api\ai\training\19b17dc10ec07e7d58463dcf613b701e-1\train\images
+val: C:\Users\angelica.saputra\OneDrive - PT Wirecard Technologies Indonesia\AI\docidp\api\ai\training\19b17dc10ec07e7d58463dcf613b701e-1\valid\images

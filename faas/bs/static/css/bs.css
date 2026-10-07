@@ -1,0 +1,13 @@
+.nav-link {
+  color: black !important;
+}
+
+.nav-link.hover {
+  color: rgba(0, 0, 0, 0.527) !important;
+}
+
+.buttons-html5 {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.2rem;
+}

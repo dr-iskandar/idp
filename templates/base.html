@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <script
+      src="https://kit.fontawesome.com/649ed7e58b.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-2.1.2/b-3.1.0/b-colvis-3.1.0/b-html5-3.1.0/b-print-3.1.0/fc-5.0.1/fh-4.0.1/rg-1.5.0/datatables.min.css"
+      rel="stylesheet"
+    />
+    <script
+      defer
+      src="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-2.1.2/b-3.1.0/b-colvis-3.1.0/b-html5-3.1.0/b-print-3.1.0/fc-5.0.1/fh-4.0.1/rg-1.5.0/datatables.min.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    {% block styles %}{% endblock %}
+    <title>{% block title %}DocIDP{% endblock %}</title>
+  </head>
+  <body>
+    <div
+      id="navigation"
+      class="d-flex flex-column flex-shrink-0 bg-light"
+      style="width: 4.5rem"
+    >
+      <!-- <i id="navigation-logo" class="fa-solid fa-file-contract p-3"></i> -->
+      <img src="/static/images/logo.png" id="navigation-logo" />
+
+      <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+        <li id="nav-home">
+          <a
+            href="/home/"
+            class="nav-link py-3 border-bottom"
+            title="Dashboard"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+          >
+            <i class="fa-solid fa-chart-line"></i>
+          </a>
+        </li>
+        <li id="nav-bank-statement">
+          <a
+            href="/bank-statement/"
+            class="nav-link py-3 m-0"
+            title="Bank Statement"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+          >
+            <!-- <svg
+              class="bi"
+              width="24"
+              height="24"
+              role="img"
+              aria-label="Orders"
+            >
+              <use xlink:href="#table" />
+            </svg> -->
+            <i class="fas fa-building-columns"></i>
+          </a>
+        </li>
+        <li id="nav-financial-statement">
+          <a
+            href="/financial-statement/"
+            class="nav-link py-3"
+            title="Financial Statement"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+          >
+            <i class="fa-solid fa-money-bill-transfer"></i>
+          </a>
+        </li>
+        <li id="nav-trade-finance">
+          <a
+            href="/trade-finance/"
+            class="nav-link py-3"
+            title="Trade Finance"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+          >
+            <i class="fa-solid fa-handshake"></i>
+          </a>
+        </li>
+        <li id="nav-playground">
+          <a
+            href="/playground/"
+            class="nav-link py-3"
+            title="IDP Playground Studio"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+          >
+            <i class="fa-solid fa-vial-circle-check"></i>
+          </a>
+        </li>
+        <li id="nav-change-password">
+          <a
+            href="#"
+            class="nav-link py-3 border-bottom"
+            title="Change Password"
+            data-bs-toggle="modal"
+            data-bs-target="#changePasswordModal"
+          >
+            <i class="fa-solid fa-key"></i>
+          </a>
+        </li>
+      </ul>
+
+      <a
+        href="#"
+        class="nav-link py-3 d-flex align-items-center justify-content-center"
+        title="Logout"
+        data-bs-toggle="tooltip"
+        data-bs-placement="right"
+        onclick="logout(event)"
+      >
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </a>
+    </div>
+    <div id="bigContainer">{% block body %} {% endblock %}</div>
+    <div
+      class="modal fade"
+      id="changePasswordModal"
+      tabindex="-1"
+      aria-labelledby="changePasswordModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="changePasswordModalLabel">
+              Change Password
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="changePasswordForm">
+              <div class="mb-3">
+                <label for="currentPassword" class="form-label"
+                  >Current Password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="currentPassword"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="newPassword" class="form-label">New Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="newPassword"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="confirmNewPassword" class="form-label"
+                  >Confirm New Password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="confirmNewPassword"
+                  required
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="changePasswordButton"
+            >
+              Change Password
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      /* global bootstrap: false */
+      (function () {
+        "use strict";
+        var tooltipTriggerList = [].slice.call(
+          document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        );
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+          new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+      })();
+    </script>
+    <script>
+      function logout(event) {
+        event.preventDefault();
+        fetch("/api/user/v1/logout", {
+          method: "POST",
+          credentials: "same-origin",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              window.location.href = "/login";
+            } else {
+              console.error("Logout failed:", data.message);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      // New function to handle navigation active state
+      document.addEventListener("DOMContentLoaded", function () {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll("#navigation .nav-link");
+        navLinks.forEach((link) => {
+          if (link.getAttribute("href") === currentPath) {
+            link.classList.add("active");
+          } else {
+            link.classList.remove("active");
+          }
+        });
+      });
+    </script>
+    <script type="text/javascript">
+      const userId = "{{ user_id }}";
+    </script>
+    <script src="{{ url_for('static', filename='base.js') }}"></script>
+    <script>
+      const publicKeyPEM = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtSTO4LH+HGNfCf1YhUyB
+jYvDyaC1fOmPBQ0VhKydrlnJOb+6V9zWFCZbvxxzJpqI6Jnehi7w6Ynh5tpbM8xP
+nAOnbeUInfJXwckX6Ua9SdWUvPgGtpVKsJKr7drNX/6Dx2uJEt2v/9WWsS3Y3kuq
+fD4jpG4xOSy35SajpccMbHZBmdlYZ1lp3k5pU47B4l9wsipFzswOV8IlWvft74KM
+axTDdpOett331QTrqAGUl92UrWnyrIe9Rji4HOw3fecziriDZqaN0xWwDX9XgMsu
+PnqnKGyWGUWmSJl027FoY1OscMremhiODLBsbvLIgSwSPn20aEznXcnC6AgoT40t
+AwIDAQAB
+-----END PUBLIC KEY-----
+`;
+      async function importPublicKey(pemKey) {
+        const binaryDer = str2ab(pemKey);
+        return await crypto.subtle.importKey(
+          "spki",
+          binaryDer,
+          {
+            name: "RSA-OAEP",
+            hash: "SHA-256",
+          },
+          true,
+          ["encrypt"]
+        );
+      }
+
+      // Helper function to convert PEM to ArrayBuffer
+      function str2ab(pem) {
+        const lines = pem.split("\n");
+        let encoded = "";
+        for (let i = 0; i < lines.length; i++) {
+          if (
+            lines[i].trim().length > 0 &&
+            lines[i].indexOf("-BEGIN PUBLIC KEY-") < 0 &&
+            lines[i].indexOf("-END PUBLIC KEY-") < 0
+          ) {
+            encoded += lines[i].trim();
+          }
+        }
+        const binaryString = window.atob(encoded);
+        const binaryLen = binaryString.length;
+        const bytes = new Uint8Array(binaryLen);
+        for (let i = 0; i < binaryLen; i++) {
+          const ascii = binaryString.charCodeAt(i);
+          bytes[i] = ascii;
+        }
+        return bytes.buffer;
+      }
+
+      // Function to encrypt data
+      async function encryptData(publicKey, data) {
+        const encoded = new TextEncoder().encode(data);
+        return await crypto.subtle.encrypt(
+          {
+            name: "RSA-OAEP",
+          },
+          publicKey,
+          encoded
+        );
+      }
+
+      // Convert ArrayBuffer to Base64 string for transmission
+      function ab2str(buf) {
+        return btoa(String.fromCharCode.apply(null, new Uint8Array(buf)));
+      }
+
+      document
+        .getElementById("changePasswordButton")
+        .addEventListener("click", async function () {
+          const currentPassword =
+            document.getElementById("currentPassword").value;
+          const newPassword = document.getElementById("newPassword").value;
+          const confirmNewPassword =
+            document.getElementById("confirmNewPassword").value;
+
+          if (newPassword !== confirmNewPassword) {
+            alert("New passwords do not match");
+            return;
+          }
+
+          const publicKey = await importPublicKey(publicKeyPEM);
+          const encryptedCurrentPassword = await encryptData(
+            publicKey,
+            currentPassword
+          );
+          const encryptedCurrentPasswordBase64 = ab2str(
+            encryptedCurrentPassword
+          );
+          const encryptedNewPassword = await encryptData(
+            publicKey,
+            newPassword
+          );
+          const encryptedNewPasswordBase64 = ab2str(encryptedNewPassword);
+
+          fetch("/api/user/v1/change_password", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              current_password: encryptedCurrentPasswordBase64,
+              new_password: encryptedNewPasswordBase64,
+              plt: "app",
+            }),
+            credentials: "same-origin",
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status_code === "SUCCESSFUL") {
+                alert("Password changed successfully");
+                $("#changePasswordModal").modal("hide");
+              } else {
+                alert(data.message || "Failed to change password");
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("An error occurred while changing the password");
+            });
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
