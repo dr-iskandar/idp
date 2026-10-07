@@ -63,15 +63,15 @@ To run this project, ensure you have the following installed:
 1. **Clone the repository**
 
    ```bash
-   git clone http://89.116.134.18:7676/angelica.saputra/wideidp.git
-   cd wideidp
+   git clone https://github.com/dr-iskandar/idp.git
+   cd idp
    ```
 
 2. **Set up a virtual environment (optional but recommended)**
 
    ```bash
-   conda create -n "wideidp" python=3.9
-   conda activate wideidp
+   python3 -m venv .venv
+   source .venv/bin/activate
    ```
 
 3. **Install dependencies**
@@ -82,8 +82,10 @@ To run this project, ensure you have the following installed:
 
 ### Run the App
 
+Panduan lengkap instalasi dan konfigurasi lokal dapat dilihat pada [CARA_MENJALANKAN.md](file:///Users/dicky.iskandar/Downloads/idp%202/CARA_MENJALANKAN.md).
+
 ```bash
-python wideidp.py
+python WideIDP.py
 ```
 
 Open a web browser and go to `http://localhost:3336` to view the web app.
