@@ -17,7 +17,6 @@ function loadSummary() {
     .then((data) => {
       if (data.statusCode === "SUCCESSFUL") {
         document.getElementById("metric-hit-balance").innerHTML = `${data.hitBalance.toLocaleString()} <span class="fs-6 text-secondary fw-normal">/ ${data.hitLimit.toLocaleString()}</span>`;
-        document.getElementById("metric-price-rate").innerHTML = `Rp ${data.pricePerHit} <span class="fs-6 text-secondary fw-normal">/ hit</span>`;
         document.getElementById("metric-total-exec").innerHTML = `${data.totalExecutions} <span class="fs-6 text-secondary fw-normal">dokumen</span>`;
         document.getElementById("metric-success-rate").innerText = data.successRate;
       }
