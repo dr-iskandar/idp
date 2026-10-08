@@ -88,12 +88,72 @@ function setupFileInputs() {
         containerExcel.querySelector("span span").textContent = this.files[0].name;
         containerExcel.classList.remove("d-none");
         dropzoneExcel.classList.add("has-file");
+        handleExcelPreview(this.files[0]);
       } else {
         containerExcel.classList.add("d-none");
         dropzoneExcel.classList.remove("has-file");
+        handleExcelPreview(null);
       }
     });
   }
+
+function handleExcelPreview(file) {
+  const previewCard = document.getElementById("excel-preview-card");
+  const countSpan = document.getElementById("excel-preview-count");
+  const thead = document.getElementById("excel-preview-thead");
+  const tbody = document.getElementById("excel-preview-tbody");
+
+  if (!file) {
+    if (previewCard) previewCard.classList.add("d-none");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("excel_file", file);
+
+  fetch("/api/playground/v1/excel/parse", {
+    method: "POST",
+    body: formData
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status_code === "SUCCESSFUL" && data.headers) {
+        let thHtml = "<tr>";
+        data.headers.forEach((h) => {
+          thHtml += `<th class="text-uppercase small fw-bold bg-light">${h}</th>`;
+        });
+        thHtml += "</tr>";
+        thead.innerHTML = thHtml;
+
+        let trHtml = "";
+        if (data.rows && data.rows.length > 0) {
+          data.rows.forEach((row) => {
+            trHtml += `<tr>`;
+            data.headers.forEach((h) => {
+              trHtml += `<td><code class="text-dark">${row[h] !== undefined ? row[h] : ""}</code></td>`;
+            });
+            trHtml += `</tr>`;
+          });
+        } else {
+          trHtml = `<tr><td colspan="${data.headers.length}" class="text-center text-muted">Tidak ada baris data dalam berkas Excel ini.</td></tr>`;
+        }
+        tbody.innerHTML = trHtml;
+        countSpan.textContent = data.rows ? data.rows.length : 0;
+        previewCard.classList.remove("d-none");
+
+        if (typeof window.showToast === "function") {
+          window.showToast(
+            `Data Excel (${data.rows ? data.rows.length : 0} baris) berhasil dimuat! Silakan unggah dokumen fisik di Langkah 2.`,
+            "success",
+            "Tabel Excel Dimuat"
+          );
+        }
+      }
+    })
+    .catch((err) => {
+      console.error("Preview Excel Error:", err);
+    });
+}
 
   // Multi Doc Files for Excel Mode
   const docImagesInput = document.getElementById("doc-images-input");

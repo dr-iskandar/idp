@@ -247,6 +247,29 @@ def compare_docs():
         }), 500
 
 
+@playground_api_bp.route('/v1/excel/parse', methods=['POST'])
+@playground_api_bp.route('/excel/parse', methods=['POST'])
+@login_required
+def parse_excel_preview():
+    """
+    Parses uploaded Excel / CSV file and returns JSON headers and rows for instant UI table preview.
+    """
+    try:
+        excel_file = request.files.get('excel_file')
+        if not excel_file:
+            return jsonify({"status_code": "ERROR", "message": "File Excel / CSV tidak ditemukan"}), 400
+
+        headers, rows_data = parse_excel_or_csv(excel_file)
+        return jsonify({
+            "status_code": "SUCCESSFUL",
+            "filename": excel_file.filename,
+            "headers": headers,
+            "rows": rows_data
+        })
+    except Exception as e:
+        return jsonify({"status_code": "ERROR", "message": str(e)}), 500
+
+
 @playground_api_bp.route('/v1/excel-to-doc/compare', methods=['POST'])
 @playground_api_bp.route('/excel-to-doc/compare', methods=['POST'])
 @login_required

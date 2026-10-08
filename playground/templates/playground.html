@@ -114,18 +114,18 @@
 
   <!-- Mode 2: Excel vs Document Form (Hidden by default) -->
   <form id="playground-excel2doc-form" class="d-none" enctype="multipart/form-data">
+    <!-- Step 1: Excel Upload Card -->
     <div class="row g-4 mb-4">
-      <!-- Excel Master File Card -->
-      <div class="col-lg-6">
-        <div class="studio-dropzone-card h-100">
+      <div class="col-12">
+        <div class="studio-dropzone-card">
           <div class="studio-card-header justify-content-between">
             <div class="d-flex align-items-center gap-3">
               <div class="icon-badge-a" style="background: #ecfdf5; color: #10b981;">
                 <i class="fa-solid fa-file-excel"></i>
               </div>
               <div>
-                <h6 class="fw-bold mb-0 text-dark" style="font-size: 1.05rem;">File Data Excel / CSV (Master Data)</h6>
-                <span class="text-secondary small">Unggah tabel target berisi baris data/field transaksi.</span>
+                <h6 class="fw-bold mb-0 text-dark" style="font-size: 1.05rem;">Langkah 1: Unggah Data Master Excel / CSV</h6>
+                <span class="text-secondary small">Pilih berkas tabel target yang ingin dibandingkan.</span>
               </div>
             </div>
             <a href="/api/playground/v1/excel-to-doc/template" class="btn btn-sm btn-light border text-dark rounded-pill px-3 py-1 fw-semibold shadow-sm">
@@ -150,17 +150,43 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Document Images / PDFs Card -->
-      <div class="col-lg-6">
-        <div class="studio-dropzone-card h-100">
+    <!-- Step 2: Live Excel Data Table Preview Card (Hidden until Excel file uploaded) -->
+    <div class="row g-4 mb-4 d-none" id="excel-preview-card">
+      <div class="col-12">
+        <div class="results-card border-success border-opacity-25" style="background: rgba(255, 255, 255, 0.95);">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold text-dark mb-0">
+              <i class="fa-solid fa-table text-success me-2"></i> Pratinjau Data Excel Master (<span id="excel-preview-count">0</span> Baris Data)
+            </h6>
+            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-1">Master Data Loaded</span>
+          </div>
+          <div class="table-responsive" style="max-height: 280px;">
+            <table class="table table-sm table-bordered table-hover align-middle mb-0" id="excel-preview-table">
+              <thead class="table-light sticky-top" id="excel-preview-thead">
+                <!-- Dynamically populated -->
+              </thead>
+              <tbody id="excel-preview-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Document Upload Card -->
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <div class="studio-dropzone-card">
           <div class="studio-card-header">
             <div class="icon-badge-b" style="background: #eef2ff; color: #4f46e5;">
               <i class="fa-solid fa-images"></i>
             </div>
             <div>
-              <h6 class="fw-bold mb-0 text-dark" style="font-size: 1.05rem;">Gambar / PDF Dokumen Fisik</h6>
-              <span class="text-secondary small">Unggah satu atau beberapa foto/scan dokumen fisik.</span>
+              <h6 class="fw-bold mb-0 text-dark" style="font-size: 1.05rem;">Langkah 2: Unggah Gambar / PDF Dokumen Fisik Pembanding</h6>
+              <span class="text-secondary small">Unggah foto atau scan dokumen fisik yang akan dibandingkan dengan data Excel di atas.</span>
             </div>
           </div>
 
@@ -186,7 +212,7 @@
     <!-- Submit Action Button for Excel mode -->
     <div class="text-center my-4">
       <button type="submit" class="btn btn-apple-submit" id="btn-submit-excel-reconcile" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-        <i class="fa-solid fa-arrows-rotate me-2"></i> Jalankan Rekonsiliasi Excel vs Dokumen
+        <i class="fa-solid fa-arrows-rotate me-2"></i> Bandingkan Data Excel & Dokumen Fisik
       </button>
     </div>
   </form>
