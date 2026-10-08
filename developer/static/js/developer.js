@@ -40,10 +40,10 @@ function loadKeys() {
             : `<span class="badge bg-secondary-subtle text-secondary border px-2.5 py-1 rounded-pill"><i class="fa-solid fa-ban me-1"></i> Revoked</span>`;
 
           const revokeBtn = key.status === "Active"
-            ? `<button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2 py-1 me-1" onclick="revokeKey('${key.id}', '${key.name}')" title="Nonaktifkan Key"><i class="fa-solid fa-power-off me-1"></i> Revoke</button>`
+            ? `<button type="button" class="btn btn-dev-action-revoke" onclick="revokeKey('${key.id}', '${key.name}')" title="Nonaktifkan Key"><i class="fa-solid fa-power-off"></i> Revoke</button>`
             : ``;
 
-          const deleteBtn = `<button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2 py-1" onclick="deleteKey('${key.id}', '${key.name}')" title="Hapus Permanen Key"><i class="fa-solid fa-trash me-1"></i> Hapus</button>`;
+          const deleteBtn = `<button type="button" class="btn btn-dev-action-delete" onclick="deleteKey('${key.id}', '${key.name}')" title="Hapus Permanen Key"><i class="fa-solid fa-trash-can"></i> Hapus</button>`;
 
           rows += `
             <tr>
@@ -51,7 +51,12 @@ function loadKeys() {
               <td><span class="key-badge-prefix">${key.keyPrefix}</span></td>
               <td>${statusBadge}</td>
               <td class="text-secondary small">${key.lastUsedAt}</td>
-              <td class="text-center">${revokeBtn}${deleteBtn}</td>
+              <td>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  ${revokeBtn}
+                  ${deleteBtn}
+                </div>
+              </td>
             </tr>
           `;
         });
