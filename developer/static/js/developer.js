@@ -40,8 +40,10 @@ function loadKeys() {
             : `<span class="badge bg-secondary-subtle text-secondary border px-2.5 py-1 rounded-pill"><i class="fa-solid fa-ban me-1"></i> Revoked</span>`;
 
           const revokeBtn = key.status === "Active"
-            ? `<button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" onclick="revokeKey('${key.id}', '${key.name}')"><i class="fa-solid fa-power-off me-1"></i> Revoke</button>`
-            : `<span class="text-muted small">N/A</span>`;
+            ? `<button type="button" class="btn btn-sm btn-outline-warning rounded-pill px-2 py-1 me-1" onclick="revokeKey('${key.id}', '${key.name}')" title="Nonaktifkan Key"><i class="fa-solid fa-power-off me-1"></i> Revoke</button>`
+            : ``;
+
+          const deleteBtn = `<button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2 py-1" onclick="deleteKey('${key.id}', '${key.name}')" title="Hapus Permanen Key"><i class="fa-solid fa-trash me-1"></i> Hapus</button>`;
 
           rows += `
             <tr>
@@ -49,7 +51,7 @@ function loadKeys() {
               <td><span class="key-badge-prefix">${key.keyPrefix}</span></td>
               <td>${statusBadge}</td>
               <td class="text-secondary small">${key.lastUsedAt}</td>
-              <td class="text-center">${revokeBtn}</td>
+              <td class="text-center">${revokeBtn}${deleteBtn}</td>
             </tr>
           `;
         });
@@ -91,6 +93,37 @@ function executeRevokeKey(keyId) {
         loadKeys();
       } else {
         if (typeof window.showToast === "function") window.showToast(data.message || "Gagal menonaktifkan API Key", "error");
+      }
+    })
+    .catch((err) => console.error(err));
+}
+
+function deleteKey(keyId, keyName) {
+  if (typeof window.showConfirmModal === "function") {
+    window.showConfirmModal({
+      title: "Hapus API Key",
+      message: `Apakah Anda yakin ingin menghapus API Key '${keyName}' secara permanen? Data key yang telah dihapus tidak dapat dipulihkan.`,
+      confirmText: "Ya, Hapus Key",
+      onConfirm: () => executeDeleteKey(keyId)
+    });
+  } else if (confirm(`Hapus API Key '${keyName}'?`)) {
+    executeDeleteKey(keyId);
+  }
+}
+
+function executeDeleteKey(keyId) {
+  fetch("/developer/v1/keys/delete", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ keyId: keyId })
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.statusCode === "SUCCESSFUL") {
+        if (typeof window.showToast === "function") window.showToast("API Key berhasil dihapus secara permanen.", "success");
+        loadKeys();
+      } else {
+        if (typeof window.showToast === "function") window.showToast(data.message || "Gagal menghapus API Key", "error");
       }
     })
     .catch((err) => console.error(err));

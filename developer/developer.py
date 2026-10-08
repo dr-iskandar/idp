@@ -117,6 +117,26 @@ def revoke_key():
     except Exception as e:
         return jsonify({"statusCode": "FAILED", "message": str(e)}), 500
 
+@developer_bp.route('/v1/keys/delete', methods=['DELETE', 'POST'])
+@login_required
+def delete_key():
+    try:
+        data = request.get_json() or {}
+        key_id = data.get("keyId") or request.args.get("keyId")
+        if not key_id:
+            return jsonify({"statusCode": "FAILED", "message": "Key ID is required"}), 400
+
+        target_key = ApiKey.query.filter_by(id=key_id, companyId=current_user.companyId).first()
+        if not target_key:
+            return jsonify({"statusCode": "FAILED", "message": "API Key not found"}), 404
+
+        db.session.delete(target_key)
+        db.session.commit()
+
+        return jsonify({"statusCode": "SUCCESSFUL", "message": "API Key deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"statusCode": "FAILED", "message": str(e)}), 500
+
 @developer_bp.route('/v1/logs/list', methods=['GET'])
 @login_required
 def list_logs():
