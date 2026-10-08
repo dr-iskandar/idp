@@ -15,6 +15,7 @@ from home.home import home_bp
 from administrator.administrator import administrator_bp
 from documentation.documentation import documentation_bp
 from playground.playground import playground_bp
+from developer.developer import developer_bp
 
 
 from flask_jwt_extended import JWTManager
@@ -54,6 +55,7 @@ if __name__ == '__main__':
     app.register_blueprint(administrator_bp, url_prefix='/administrator')
     app.register_blueprint(documentation_bp, url_prefix='/documentation')
     app.register_blueprint(playground_bp, url_prefix='/playground')
+    app.register_blueprint(developer_bp, url_prefix='/developer')
 
     with app.app_context():
         db.create_all() 

@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('developer.static', filename='css/developer.css') }}" />
+{% endblock %}
+
+{% block title %} API Developer Portal & Metered Billing | DocIDP {% endblock %}
+
+{% block body %}
+<div class="container-fluid px-4 py-3">
+  <!-- Hero Header -->
+  <div class="dev-hero-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+      <div class="dev-title">
+        <i class="fa-solid fa-code text-primary me-2"></i> API Developer Portal & Metered Billing
+      </div>
+      <div class="dev-subtitle mt-1">
+        Kelola API Key, pantau konsumsi kuota IDP Per-Hit secara real-time, dan telusuri log eksekusi pemrosesan AI Engine.
+      </div>
+    </div>
+    <div>
+      <button type="button" class="btn btn-primary rounded-pill px-3 py-2 shadow-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#createKeyModal">
+        <i class="fa-solid fa-plus me-1.5"></i> Generate API Key Baru
+      </button>
+    </div>
+  </div>
+
+  <!-- Metric Overview Cards (Per-Hit Telemetry) -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="dev-metric-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="metric-label">Kredit Hit Tersedia</span>
+          <div class="metric-icon-box metric-icon-balance">
+            <i class="fa-solid fa-coins"></i>
+          </div>
+        </div>
+        <div class="metric-value" id="metric-hit-balance">4,850 <span class="fs-6 text-secondary fw-normal">/ 5,000</span></div>
+        <div class="small text-muted mt-1"><i class="fa-solid fa-circle-check text-success me-1"></i> Kuota IDP Aktif</div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="dev-metric-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="metric-label">Tarif per Hit (IDP Rate)</span>
+          <div class="metric-icon-box metric-icon-rate">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+        </div>
+        <div class="metric-value" id="metric-price-rate">Rp 250 <span class="fs-6 text-secondary fw-normal">/ hit</span></div>
+        <div class="small text-muted mt-1"><i class="fa-solid fa-shield-halved text-primary me-1"></i> Tier Enterprise Metered</div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="dev-metric-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="metric-label">Total Eksekusi API</span>
+          <div class="metric-icon-box metric-icon-exec">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+        </div>
+        <div class="metric-value" id="metric-total-exec">150 <span class="fs-6 text-secondary fw-normal">dokumen</span></div>
+        <div class="small text-muted mt-1"><i class="fa-solid fa-clock-rotate-left text-warning me-1"></i> Akumulasi Bulan Ini</div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="dev-metric-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="metric-label">SLA & Success Rate</span>
+          <div class="metric-icon-box metric-icon-success">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+        </div>
+        <div class="metric-value text-success" id="metric-success-rate">99.8%</div>
+        <div class="small text-muted mt-1"><i class="fa-solid fa-server text-success me-1"></i> Health Uptime 100%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <!-- API Keys Management Panel -->
+    <div class="col-lg-7">
+      <div class="studio-glass-card h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold text-dark mb-0">
+            <i class="fa-solid fa-key text-primary me-2"></i> Manajemen API Keys
+          </h6>
+          <span class="badge bg-light text-dark border px-2.5 py-1 rounded-pill">Active Keys</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-custom align-middle mb-0" id="keys-table">
+            <thead>
+              <tr>
+                <th>Nama Key</th>
+                <th>Prefix API Key</th>
+                <th>Status</th>
+                <th>Terakhir Dipakai</th>
+                <th class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="keys-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code Snippet Generator -->
+    <div class="col-lg-5">
+      <div class="studio-glass-card h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold text-dark mb-0">
+            <i class="fa-solid fa-terminal text-primary me-2"></i> Integrasi API (Quickstart)
+          </h6>
+          <select class="form-select form-select-sm border-0 bg-light fw-semibold text-secondary" style="width: auto;" id="endpoint-selector">
+            <option value="reconcile">Doc-to-Doc Reconcile API</option>
+            <option value="bank_statement">Bank Statement API</option>
+            <option value="financial_statement">Financial Statement API</option>
+            <option value="trade_finance">Trade Finance API</option>
+          </select>
+        </div>
+
+        <div class="d-flex gap-2 mb-2">
+          <button type="button" class="btn btn-sm btn-dark active rounded-pill px-3 code-lang-btn" data-lang="curl">cURL</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 code-lang-btn" data-lang="python">Python</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 code-lang-btn" data-lang="nodejs">Node.js</button>
+        </div>
+
+        <div class="code-snippet-box">
+          <button type="button" class="copy-btn-floating" onclick="copySnippet()"><i class="fa-regular fa-copy me-1"></i> Copy</button>
+          <pre id="snippet-display-area" class="mb-0"><code>// Code snippet loading...</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Execution Logs & Metering Audit Trail -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="studio-glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h6 class="fw-bold text-dark mb-0">
+              <i class="fa-solid fa-list-ul text-primary me-2"></i> Audit Trail & Log Eksekusi Hit API
+            </h6>
+            <span class="text-secondary small">Menampilkan 50 eksekusi API IDP per-hit terakhir.</span>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="loadLogs()">
+            <i class="fa-solid fa-arrows-rotate me-1"></i> Refresh Log
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-custom align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Waktu (WIB)</th>
+                <th>Endpoint IDP</th>
+                <th>HTTP Method</th>
+                <th>Status Code</th>
+                <th>Latency</th>
+                <th>Hit Reduction</th>
+              </tr>
+            </thead>
+            <tbody id="logs-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Create Key -->
+<div class="modal fade" id="createKeyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg style-apple-modal" style="border-radius: 18px;">
+      <div class="modal-header border-bottom-0 pb-0">
+        <h5 class="modal-title fw-bold text-dark"><i class="fa-solid fa-key text-primary me-2"></i> Generate API Key Baru</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-3">
+        <form id="create-key-form">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-secondary">Nama API Key / Deskripsi Service</label>
+            <input type="text" class="form-control" id="key-name-input" placeholder="Contoh: Production ERP Integration Key" required>
+          </div>
+        </form>
+
+        <div class="d-none alert alert-success mt-3" id="secret-key-display-box">
+          <div class="fw-bold mb-1 text-dark"><i class="fa-solid fa-shield-check text-success me-1.5"></i> Simpan API Key Anda sekarang!</div>
+          <div class="small text-secondary mb-2">API Key ini hanya ditampilkan **SATU KALI**. Harap salin dan simpan di environment terisolasi.</div>
+          <div class="input-group">
+            <input type="text" class="form-control font-monospace" id="generated-secret-key-input" readonly>
+            <button class="btn btn-primary" type="button" onclick="copyGeneratedKey()"><i class="fa-solid fa-copy me-1"></i> Salin</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0 pt-0">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+        <button type="button" class="btn btn-primary rounded-pill px-4 fw-semibold" id="btn-submit-create-key">Generate Key</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('developer.static', filename='js/developer.js') }}"></script>
+{% endblock %}

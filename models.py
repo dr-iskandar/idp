@@ -209,6 +209,29 @@ class TfDocsPages(db.Model):
     createdAt = db.Column(db.DateTime, nullable=False)
     updatedAt = db.Column(db.DateTime, nullable=False)
 
+class ApiKey(db.Model):
+    __tablename__ = 'apiKey'
+    id = db.Column(db.String(36), primary_key=True)
+    companyId = db.Column(db.String(36), db.ForeignKey('companyAuth.id'), nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    keyPrefix = db.Column(db.String(32), nullable=False)
+    keyHash = db.Column(db.String(255), nullable=False)
+    status = db.Column(db.String(50), default='Active')
+    lastUsedAt = db.Column(db.DateTime)
+    createdAt = db.Column(db.DateTime, nullable=False)
+    updatedAt = db.Column(db.DateTime, nullable=False)
+
+class ApiRequestLog(db.Model):
+    __tablename__ = 'apiRequestLog'
+    id = db.Column(db.String(36), primary_key=True)
+    companyId = db.Column(db.String(36), db.ForeignKey('companyAuth.id'), nullable=False)
+    endpoint = db.Column(db.String(255), nullable=False)
+    method = db.Column(db.String(10), nullable=False)
+    statusCode = db.Column(db.Integer, nullable=False)
+    latencyMs = db.Column(db.Integer, nullable=False)
+    hitsCount = db.Column(db.Integer, default=1)
+    createdAt = db.Column(db.DateTime, nullable=False)
+
 @event.listens_for(CompanyAuth, 'before_insert')
 @event.listens_for(UserAuth, 'before_insert')
 @event.listens_for(FaasBs, 'before_insert')
@@ -225,9 +248,15 @@ class TfDocsPages(db.Model):
 @event.listens_for(TradeFinance, 'before_insert')
 @event.listens_for(TfDocs, 'before_insert')
 @event.listens_for(TfDocsPages, 'before_insert')
+@event.listens_for(ApiKey, 'before_insert')
 def set_created_at(mapper, connection, target):
     target.createdAt = current_time_jakarta()
     target.updatedAt = current_time_jakarta()
+
+@event.listens_for(ApiRequestLog, 'before_insert')
+def set_log_created_at(mapper, connection, target):
+    target.createdAt = current_time_jakarta()
+
 @event.listens_for(CompanyAuth, 'before_update')
 @event.listens_for(UserAuth, 'before_update')
 @event.listens_for(FaasBs, 'before_update')
@@ -243,5 +272,6 @@ def set_created_at(mapper, connection, target):
 @event.listens_for(TradeFinance, 'before_update')
 @event.listens_for(TfDocs, 'before_update')
 @event.listens_for(TfDocsPages, 'before_update')
+@event.listens_for(ApiKey, 'before_update')
 def set_updated_at(mapper, connection, target):
     target.updatedAt = current_time_jakarta()
