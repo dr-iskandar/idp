@@ -4,23 +4,31 @@
 <link rel="stylesheet" href="{{ url_for('playground.static', filename='css/playground.css') }}" />
 {% endblock %}
 
-{% block title %} Document Reconciliation | DocIDP {% endblock %}
+{% block title %} Document Reconciliation Studio | DocIDP {% endblock %}
 
 {% block body %}
 <div class="container-fluid px-4 py-3">
   <!-- Hero Header -->
-  <div class="playground-header-hero d-flex justify-content-between align-items-center flex-wrap gap-2">
+  <div class="playground-header-hero d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
     <div>
       <div class="playground-title">
         <i class="fa-solid fa-layer-group text-primary"></i> Document Reconciliation Studio
       </div>
       <div class="playground-subtitle">
-        Unggah dua dokumen (PDF atau Gambar) untuk mengekstrak dan menganalisis kesesuaian data secara otomatis melalui AI Engine.
+        Ekstraksi dan analisis kesesuaian data secara otomatis melalui AI Engine (Doc-to-Doc atau Data Excel vs Dokumen Fisik).
       </div>
+    </div>
+    <div class="d-flex gap-2 bg-light p-1.5 rounded-pill border">
+      <button type="button" class="btn btn-sm btn-primary active rounded-pill px-3 fw-semibold" id="btn-mode-doc2doc">
+        <i class="fa-solid fa-clone me-1.5"></i> Doc-to-Doc Reconcile
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-semibold" id="btn-mode-excel2doc">
+        <i class="fa-solid fa-file-excel text-success me-1.5"></i> Excel vs Dokumen (Bulk)
+      </button>
     </div>
   </div>
 
-  <!-- Upload Form Area -->
+  <!-- Mode 1: Doc-to-Doc Form -->
   <form id="playground-doc2doc-form" enctype="multipart/form-data">
     <div class="row g-4 mb-4">
       <!-- Document A Dropzone Card -->
@@ -104,6 +112,85 @@
     </div>
   </form>
 
+  <!-- Mode 2: Excel vs Document Form (Hidden by default) -->
+  <form id="playground-excel2doc-form" class="d-none" enctype="multipart/form-data">
+    <div class="row g-4 mb-4">
+      <!-- Excel Master File Card -->
+      <div class="col-lg-6">
+        <div class="studio-dropzone-card h-100">
+          <div class="studio-card-header justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+              <div class="icon-badge-a" style="background: #ecfdf5; color: #10b981;">
+                <i class="fa-solid fa-file-excel"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold mb-0 text-dark" style="font-size: 1.05rem;">File Data Excel / CSV (Master Data)</h6>
+                <span class="text-secondary small">Unggah tabel target berisi baris data/field transaksi.</span>
+              </div>
+            </div>
+            <a href="/api/playground/v1/excel-to-doc/template" class="btn btn-sm btn-light border text-dark rounded-pill px-3 py-1 fw-semibold shadow-sm">
+              <i class="fa-solid fa-download me-1.5 text-success"></i> Template Excel
+            </a>
+          </div>
+
+          <!-- Dropzone Excel -->
+          <div class="dropzone-box mt-3" id="dropzone-excel" onclick="document.getElementById('excel-file-input').click()">
+            <div class="dropzone-icon" style="color: #10b981;">
+              <i class="fa-solid fa-file-spreadsheet"></i>
+            </div>
+            <div class="fw-bold text-dark mb-1" style="font-size: 0.98rem;">Unggah Berkas Excel / CSV</div>
+            <div class="small text-secondary mb-3">Format disupport: .xlsx, .xls, .csv</div>
+            <input type="file" class="form-control d-none" id="excel-file-input" name="excel_file" accept=".xlsx,.xls,.csv">
+            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-4 py-1 fw-semibold">
+              <i class="fa-solid fa-folder-open me-1.5"></i> Pilih File Excel
+            </button>
+            <div class="d-none mt-2" id="excel-file-name-container">
+              <span class="file-chip" id="excel-file-name-display" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0;"><i class="fa-solid fa-file-excel me-1"></i> <span></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Document Images / PDFs Card -->
+      <div class="col-lg-6">
+        <div class="studio-dropzone-card h-100">
+          <div class="studio-card-header">
+            <div class="icon-badge-b" style="background: #eef2ff; color: #4f46e5;">
+              <i class="fa-solid fa-images"></i>
+            </div>
+            <div>
+              <h6 class="fw-bold mb-0 text-dark" style="font-size: 1.05rem;">Gambar / PDF Dokumen Fisik</h6>
+              <span class="text-secondary small">Unggah satu atau beberapa foto/scan dokumen fisik.</span>
+            </div>
+          </div>
+
+          <!-- Dropzone Doc Images -->
+          <div class="dropzone-box mt-3" id="dropzone-doc-images" onclick="document.getElementById('doc-images-input').click()">
+            <div class="dropzone-icon" style="color: #4f46e5;">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <div class="fw-bold text-dark mb-1" style="font-size: 0.98rem;">Unggah Dokumen Pembanding</div>
+            <div class="small text-secondary mb-3">Klik atau seret berkas ke sini (PDF, JPG, PNG)</div>
+            <input type="file" class="form-control d-none" id="doc-images-input" name="doc_files" multiple accept=".pdf,.jpg,.jpeg,.png">
+            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-4 py-1 fw-semibold" style="border-color: #4f46e5; color: #4f46e5;">
+              <i class="fa-solid fa-folder-open me-1.5"></i> Pilih Gambar / PDF
+            </button>
+            <div class="d-none mt-2" id="doc-images-name-container">
+              <div id="doc-images-list" class="d-flex flex-wrap gap-2 justify-content-center"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Action Button for Excel mode -->
+    <div class="text-center my-4">
+      <button type="submit" class="btn btn-apple-submit" id="btn-submit-excel-reconcile" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <i class="fa-solid fa-arrows-rotate me-2"></i> Jalankan Rekonsiliasi Excel vs Dokumen
+      </button>
+    </div>
+  </form>
+
   <!-- Live Results Panel (Hidden until submission) -->
   <div class="row d-none mb-5" id="results-section">
     <div class="col-12">
@@ -131,7 +218,7 @@
         <div class="table-responsive">
           <table class="table table-custom align-middle mb-0">
             <thead>
-              <tr>
+              <tr id="matrix-table-header">
                 <th>Item Perbandingan</th>
                 <th>Nilai Dokumen A</th>
                 <th>Nilai Dokumen B</th>

@@ -71,14 +71,21 @@ Mengolah set dokumen perdagangan internasional yang kompleks.
 
 ---
 
-## 🧪 4. IDP Playground Studio - Doc-to-Doc Reconciliation (`/playground/`)
+## 🧪 4. IDP Playground Studio - AI Reconciliation Studio (`/playground/`)
 
-Studio rekonsiliasi silang dokumen interaktif berbasis AI Engine.
+Studio rekonsiliasi silang interaktif berbasis AI Engine yang mendukung 2 mode utama:
 
 ### **Kapabilitas**:
-- **Dual Dropzone Upload**: Mengunggah 2 dokumen pembanding (PDF/JPG/PNG) dengan fitur seret-dan-lepas (*drag-and-drop*).
-- **Doc-to-Doc AI Matching**: AI Engine menganalisis kesesuaian nilai antara Dokumen A (Referensi Utama, misal: LC/PO) dan Dokumen B (Tagihan/Invoice).
-- **Discrepancy Matrix Table**: Menampilkan hasil perbandingan per item, skor kemiripan (*similarity %*), status *Match/Mismatch*, dan catatan audit (*Audit Notes*).
+- **Dual Mode Switcher**:
+  1. **Doc-to-Doc Reconcile**: Rekonsiliasi 2 dokumen fisik (PDF/JPG/PNG) secara langsung (misal: LC/PO vs Commercial Invoice).
+  2. **Excel vs Dokumen (Bulk)**: Rekonsiliasi massal tabel data dari berkas Excel/CSV (Master Data) terhadap 1 atau beberapa foto/scan dokumen fisik.
+- **Excel Master Data Dropzone & Template Download**:
+  - Mengunggah berkas Excel (`.xlsx`, `.xls`) atau `.csv`.
+  - Dilengkapi tombol **Unduh Template Excel** (`/v1/excel-to-doc/template`) untuk mempermudah pengguna menyiapkan data awal.
+- **Multi-Document Dropzone**: Mendukung pengunggahan beberapa foto/scan dokumen sekaligus untuk dibandingkan dengan baris data Excel.
+- **AI Matching & Comparison Matrix**:
+  - Membandingkan nilai expected (Excel) vs actual (Dokumen).
+  - Skor kemiripan (*similarity score %*), status *MATCH/FUZZY MATCH/MISMATCH*, serta catatan audit (*Audit Notes*).
 - **Apple Studio Glassmorphism Aesthetics**: Tampilan UI premium transparan berteknologi modern tanpa tombol AI slop.
 
 ---

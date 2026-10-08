@@ -14,3 +14,4 @@ flask_jwt_extended
 cryptography
 python-dotenv
 httpx<0.28.0
+openpyxl
