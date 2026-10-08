@@ -28,24 +28,35 @@ def process_file_to_base64_images(file_storage):
     filename = file_storage.filename
     ext = check_extension(filename)
     
-    with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ext}") as temp_file:
-        file_storage.save(temp_file.name)
-        temp_path = temp_file.name
+    if hasattr(file_storage.stream, 'seek'):
+        file_storage.stream.seek(0)
 
     base64_images = []
+    temp_path = None
     try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ext}") as temp_file:
+            file_storage.save(temp_file.name)
+            temp_path = temp_file.name
+
         if ext == 'pdf':
-            pages = convert_from_path(temp_path, dpi=200, first_page=1, last_page=2)
+            pages = convert_from_path(temp_path, dpi=150, first_page=1, last_page=2)
             for page in pages:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as page_file:
                     page.save(page_file.name, 'JPEG')
                     base64_images.append(encode_image(page_file.name))
-                    os.remove(page_file.name)
+                    if os.path.exists(page_file.name):
+                        os.remove(page_file.name)
         else:
             base64_images.append(encode_image(temp_path))
+    except Exception as e:
+        print(f"Error processing file to base64 images ({filename}):", e)
     finally:
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
+        if temp_path and os.path.exists(temp_path):
+            try: os.remove(temp_path)
+            except: pass
+        if hasattr(file_storage.stream, 'seek'):
+            try: file_storage.stream.seek(0)
+            except: pass
 
     return base64_images
 
@@ -58,8 +69,16 @@ def parse_excel_or_csv(file_storage):
     rows_data = []
 
     try:
+        if hasattr(file_storage.stream, 'seek'):
+            file_storage.stream.seek(0)
+
+        raw_bytes = file_storage.stream.read()
+        if hasattr(file_storage.stream, 'seek'):
+            file_storage.stream.seek(0)
+
         if filename.endswith('.csv'):
-            stream = io.StringIO(file_storage.stream.read().decode("utf-8", errors="ignore"), newline=None)
+            content = raw_bytes.decode("utf-8", errors="ignore")
+            stream = io.StringIO(content, newline=None)
             reader = csv.reader(stream)
             all_rows = list(reader)
             if all_rows:
@@ -69,7 +88,7 @@ def parse_excel_or_csv(file_storage):
                         row_dict = {headers[i]: str(r[i]).strip() if i < len(r) else "" for i in range(len(headers))}
                         rows_data.append(row_dict)
         else:
-            wb = openpyxl.load_workbook(file_storage.stream, data_only=True)
+            wb = openpyxl.load_workbook(io.BytesIO(raw_bytes), data_only=True)
             sheet = wb.active
             all_rows = list(sheet.iter_rows(values_only=True))
             if all_rows:
@@ -80,6 +99,9 @@ def parse_excel_or_csv(file_storage):
                         rows_data.append(row_dict)
     except Exception as e:
         print("Error parsing Excel/CSV:", e)
+        if hasattr(file_storage.stream, 'seek'):
+            try: file_storage.stream.seek(0)
+            except: pass
 
     return headers, rows_data
 
